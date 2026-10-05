@@ -21,6 +21,5 @@ View your app in AI Studio: https://ai.studio/apps/b62ae5db-b07e-4546-b416-996ea
 
 ## Publish to GitHub Pages
 
-This repository publishes from the root of the `main` branch. Before pushing
-application changes, run `npm run build:pages` and commit the generated root
-`index.html` and `assets/` files along with the source changes.
+Pushing to `main` automatically builds the Vite app and deploys the `dist/`
+directory to GitHub Pages using GitHub Actions.

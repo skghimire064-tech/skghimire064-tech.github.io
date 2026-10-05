@@ -21,5 +21,6 @@ View your app in AI Studio: https://ai.studio/apps/b62ae5db-b07e-4546-b416-996ea
 
 ## Publish to GitHub Pages
 
-Pushing to `main` automatically builds the Vite app and deploys the `dist/`
-directory to GitHub Pages using GitHub Actions.
+In the repository settings, set **Pages → Build and deployment → Source** to
+**GitHub Actions**. Pushing to `main` then automatically builds the Vite app
+and deploys the `dist/` directory to GitHub Pages.

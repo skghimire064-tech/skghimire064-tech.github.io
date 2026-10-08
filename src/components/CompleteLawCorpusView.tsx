@@ -13,11 +13,7 @@ import {
   X
 } from 'lucide-react';
 import { ACT_CHAPTERS } from '../data/completeLawData';
-import {
-  ACT_PROVISIONS,
-  RULE_PROVISIONS,
-  RULES_BY_ACT_PROVISION,
-} from '../data/lawProvisionIndex';
+import { RULES_BY_ACT_PROVISION } from '../data/lawProvisionIndex';
 import {
   ACT_PROVISION_TEXT,
   RULE_PROVISION_TEXT,
@@ -29,6 +25,19 @@ const normalizeProvisionNumber = (number: string) =>
   number.replace(/[०-९]/g, (digit) => String('०१२३४५६७८९'.indexOf(digit)));
 const formatProvisionNumber = (number: string) =>
   number.replace(/[0-9]/g, (digit) => '०१२३४५६७८९'[Number(digit)]);
+const getProvisions = (text: Record<string, string>) =>
+  Object.keys(text)
+    .map((number) => ({ number }))
+    .sort((left, right) =>
+      normalizeProvisionNumber(left.number).localeCompare(
+        normalizeProvisionNumber(right.number),
+        'ne',
+        { numeric: true }
+      )
+    );
+
+const ACT_PROVISIONS = getProvisions(ACT_PROVISION_TEXT);
+const RULE_PROVISIONS = getProvisions(RULE_PROVISION_TEXT);
 
 export const CompleteLawCorpusView: React.FC = () => {
   const [selectedChapterId, setSelectedChapterId] = useState<string>('all');

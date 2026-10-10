@@ -23,6 +23,12 @@ type LawType = 'act' | 'rules';
 
 const normalizeProvisionNumber = (number: string) =>
   number.replace(/[०-९]/g, (digit) => String('०१२३४५६७८९'.indexOf(digit)));
+const getProvisionText = (text: Record<string, string>, number: string) =>
+  text[number] ??
+  Object.entries(text).find(
+    ([provisionNumber]) =>
+      normalizeProvisionNumber(provisionNumber) === normalizeProvisionNumber(number)
+  )?.[1];
 const formatProvisionNumber = (number: string) =>
   number.replace(/[0-9]/g, (digit) => '०१२३४५६७८९'[Number(digit)]);
 const getProvisions = (text: Record<string, string>) =>
@@ -59,9 +65,10 @@ export const CompleteLawCorpusView: React.FC = () => {
   const selectedRelatedRules = activeLaw === 'act'
     ? RULES_BY_ACT_PROVISION[normalizeProvisionNumber(selectedSource.number)] ?? []
     : [];
-  const selectedProvisionText = (activeLaw === 'act' ? ACT_PROVISION_TEXT : RULE_PROVISION_TEXT)[
-    normalizeProvisionNumber(selectedSource.number)
-  ];
+  const selectedProvisionText = getProvisionText(
+    activeLaw === 'act' ? ACT_PROVISION_TEXT : RULE_PROVISION_TEXT,
+    selectedSource.number
+  );
   const filteredProvisions = provisions.filter((provision) => {
     if (!searchQuery.trim()) return true;
     const query = normalizeProvisionNumber(searchQuery.trim().replace(/^(दफा|नियम)\s*/, ''));

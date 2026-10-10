@@ -40,8 +40,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       groupTitle: 'व्यवस्थापन तथा सल्लाह',
       items: [
-        { id: 'dashboard', label: 'ड्यासबोर्ड', icon: Briefcase, desc: 'चालू योजना तथा प्रगति' },
-        { id: 'advisor', label: 'खरिद सल्लाहकार', icon: Sparkles, desc: '३ चरणमा कानुनी मार्गनिर्देशन', badge: 'नयाँ' },
+        { id: 'dashboard', label: 'ड्यासबोर्ड', icon: Briefcase, desc: 'चालु योजना तथा प्रगति' },
+        { id: 'advisor', label: 'खरिद सल्लाहकार', icon: Sparkles, desc: '३ चरणमा कानूनी मार्गनिर्देशन', badge: 'नयाँ' },
       ],
     },
     {
@@ -53,26 +53,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
     {
       groupTitle: 'खरिद विधि तथा अनुपालन',
       items: [
-        { id: 'methods', label: 'खरिद विधिहरू', icon: Layers, desc: '१६+ कानुनी खरिद विधिहरू' },
+        { id: 'methods', label: 'खरिद विधिहरू', icon: Layers, desc: '१६+ खरिद विधिहरू' },
         { id: 'method-checklists', label: 'विधिगत चेकलिस्ट', icon: FileCheck2, desc: 'हरेक विधिको रुजु सूची' },
         { id: 'stages', label: 'प्रक्रियागत ७ चरणहरू', icon: ClipboardList, desc: 'तयारीदेखि फरफारकसम्म' },
-        { id: 'checklists', label: 'एकीकृत चेकलिस्ट', icon: ShieldCheck, desc: 'मास्टर अडिट चेकसूची' },
+        { id: 'checklists', label: 'एकीकृत चेकलिस्ट', icon: ShieldCheck, desc: 'मास्टर अडिट चेकलिष्ट' },
       ],
     },
     {
-      groupTitle: 'कानुनी संग्रह तथा संशोधन',
+      groupTitle: 'कानूनी संग्रह तथा संशोधन',
       items: [
-        { id: 'law-corpus', label: 'ऐन/नियम पूर्ण संग्रह', icon: BookOpen, desc: 'दफा १ देखि ७६ र नियमहरू', badge: 'पूर्ण' },
+        { id: 'law-corpus', label: 'ऐन/नियमका व्यवस्थाहरु', icon: BookOpen, desc: 'दफा १ देखि ७६ र नियमहरू', badge: 'पूर्ण' },
         { id: 'amendments', label: '१६औँ संशोधनका विशेषता', icon: ShieldCheck, desc: 'नयाँ परिवर्तन तथा तुलना' },
-        { id: 'clauses', label: 'महत्वपूर्ण दफाहरू', icon: BookOpen, desc: 'प्रमुख कानुनी व्यवस्थाहरू' },
-        { id: 'schedules', label: 'अनुसूचीहरू (१–८)', icon: Scale, desc: 'लागत र सूचना पाटी ढाँचा' },
+        { id: 'clauses', label: 'महत्वपूर्ण दफाहरू', icon: BookOpen, desc: 'प्रमुख कानूनी व्यवस्थाहरू' },
+        { id: 'schedules', label: 'अनुसूचीहरू (१–८)', icon: Scale, desc: 'लागत र सूचना ढाँचा' },
       ],
     },
     {
-      groupTitle: 'उपकरण तथा कागजात',
+      groupTitle: 'नमूना कागजात',
       items: [
-        { id: 'templates', label: 'कागजात ढाँचा भण्डार', icon: FileText, desc: 'सूचना, सम्झौता र फारामहरू (Word)' },
-        { id: 'calculator', label: 'सीमा क्याल्कुलेटर', icon: Calculator, desc: 'अख्तियारी र धरौटी गणना' },
+        { id: 'templates', label: 'कागजात ढाँचाहरु', icon: FileText, desc: 'सूचना, सम्झौता र फारामहरू (Word)' },
+        { id: 'calculator', label: 'थ्रेसहोल्ड क्याल्कुलेटर', icon: Calculator, desc: 'अख्तियारी र धरौटी गणना' },
       ],
     },
   ];
@@ -113,7 +113,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   सार्वजनिक खरिद सहयोगी
                 </span>
                 <span className="text-[11px] font-medium text-slate-500">
-                  ऐन २०६३ र नियमावली २०६४
+                  सार्वजनिक खरिद ऐन २०६३ र नियमावली २०६४
                 </span>
               </div>
             </button>

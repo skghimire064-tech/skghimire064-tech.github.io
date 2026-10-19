@@ -41,24 +41,24 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   const current = TAB_TITLES[activeTab] || { title: 'सार्वजनिक खरिद सहयोगी', category: 'प्रणाली' };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 h-16 flex items-center justify-between px-4 sm:px-6 shadow-2xs">
+    <header className="sticky top-0 z-30 bg-[#173b63]/95 text-white backdrop-blur-md border-b border-[#31577b] h-16 flex items-center justify-between px-4 sm:px-6 shadow-2xs">
       {/* Left: Mobile hamburger menu toggle + Breadcrumb trail */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebarMobile}
-          className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 lg:hidden transition-colors"
+          className="p-2 rounded-lg text-blue-100 hover:text-white hover:bg-white/10 lg:hidden transition-colors"
           title="मेनु खोल्नुहोस्"
         >
           <Menu className="w-5 h-5" />
         </button>
 
         {/* Breadcrumb Trail */}
-        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium truncate">
-          <span className="hidden sm:inline hover:text-slate-800 transition-colors">खरिद निर्देशिका</span>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400 hidden sm:inline" />
-          <span className="text-slate-500 hidden md:inline">{current.category}</span>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400 hidden md:inline" />
-          <span className="font-bold text-slate-900 truncate text-xs sm:text-sm">{current.title}</span>
+        <div className="flex items-center gap-1.5 text-xs text-blue-100/80 font-medium truncate">
+          <span className="hidden sm:inline hover:text-white transition-colors">खरिद निर्देशिका</span>
+          <ChevronRight className="w-3.5 h-3.5 text-blue-200/60 hidden sm:inline" />
+          <span className="text-blue-100/80 hidden md:inline">{current.category}</span>
+          <ChevronRight className="w-3.5 h-3.5 text-blue-200/60 hidden md:inline" />
+          <span className="font-bold text-white truncate text-xs sm:text-sm">{current.title}</span>
         </div>
       </div>
 
@@ -66,19 +66,19 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
       <div className="flex items-center gap-2">
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors border border-slate-200"
+          className="flex items-center gap-2 px-3 py-1.5 text-xs sm:text-sm font-medium text-blue-50 bg-white/10 hover:bg-white/15 rounded-lg transition-colors border border-white/15"
           title="खोज तथा फिल्टर (Ctrl + K वा /)"
         >
-          <Search className="w-4 h-4 text-slate-500" />
+          <Search className="w-4 h-4 text-blue-200" />
           <span className="hidden md:inline">खोज्नुहोस्</span>
-          <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-300 rounded-sm text-slate-500">
+          <kbd className="hidden md:inline-block px-1.5 py-0.5 text-[10px] font-mono bg-white/10 border border-white/20 rounded-sm text-blue-100">
             /
           </kbd>
         </button>
 
         <button
           onClick={() => window.print()}
-          className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors no-print"
+          className="p-2 text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition-colors no-print"
           title="प्रिन्ट गर्नुहोस्"
         >
           <Printer className="w-4 h-4" />

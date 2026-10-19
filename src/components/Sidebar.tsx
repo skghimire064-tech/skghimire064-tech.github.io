@@ -94,13 +94,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-50 w-72 bg-[#173b63] text-blue-50 border-r border-[#31577b] flex flex-col justify-between transition-transform duration-200 ease-in-out lg:translate-x-0 ${
           isOpenMobile ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
         }`}
       >
         {/* Top: Branding & Close button for mobile */}
         <div>
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
+          <div className="p-4 border-b border-[#31577b] flex items-center justify-between bg-[#214f83]">
             <button
               onClick={() => handleNavClick('dashboard')}
               className="flex items-center gap-2.5 text-left group focus:outline-hidden"
@@ -109,10 +109,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 ख
               </div>
               <div className="flex flex-col">
-                <span className="text-base font-bold tracking-tight text-slate-900 group-hover:text-red-700 transition-colors">
+                <span className="text-base font-bold tracking-tight text-white group-hover:text-blue-100 transition-colors">
                   सार्वजनिक खरिद सहयोगी
                 </span>
-                <span className="text-[11px] font-medium text-slate-500">
+                <span className="text-[11px] font-medium text-blue-100/80">
                   सार्वजनिक खरिद ऐन २०६३ र नियमावली २०६४
                 </span>
               </div>
@@ -120,14 +120,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             <button
               onClick={onCloseMobile}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 rounded-lg lg:hidden transition-colors"
+              className="p-1.5 text-blue-200 hover:text-white hover:bg-white/10 rounded-lg lg:hidden transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
           {/* Quick Action Button: New Project */}
-          <div className="p-3 border-b border-slate-100 bg-white">
+          <div className="p-3 border-b border-[#31577b] bg-[#173b63]">
             <button
               onClick={() => { onOpenNewProject(); onCloseMobile(); }}
               className="w-full py-2 px-3 bg-red-700 hover:bg-red-800 text-white rounded-lg font-semibold text-xs flex items-center justify-center gap-2 shadow-xs transition-colors"
@@ -141,13 +141,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <div className="px-3 pt-2.5">
             <button
               onClick={() => { onOpenSearch(); onCloseMobile(); }}
-              className="w-full flex items-center justify-between p-2 text-xs text-slate-500 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 transition-colors"
+              className="w-full flex items-center justify-between p-2 text-xs text-blue-100 bg-white/10 hover:bg-white/15 rounded-lg border border-white/15 transition-colors"
             >
               <div className="flex items-center gap-2">
-                <Search className="w-3.5 h-3.5 text-slate-400" />
+                <Search className="w-3.5 h-3.5 text-blue-200" />
                 <span>खोज तथा फिल्टर...</span>
               </div>
-              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white border border-slate-200 rounded text-slate-400">
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-white/10 border border-white/20 rounded text-blue-100">
                 /
               </kbd>
             </button>
@@ -158,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-5 text-left text-xs">
           {navGroups.map((group, gIdx) => (
             <div key={gIdx} className="space-y-1">
-              <h3 className="px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+              <h3 className="px-2 text-[10px] font-bold text-blue-200/70 uppercase tracking-wider">
                 {group.groupTitle}
               </h3>
               <div className="space-y-0.5">
@@ -171,22 +171,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       onClick={() => handleNavClick(item.id)}
                       className={`w-full flex items-center justify-between p-2 rounded-lg transition-all group ${
                         isActive
-                          ? 'bg-red-50 text-red-900 font-bold border-l-4 border-red-700 shadow-2xs'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                          ? 'bg-blue-100 text-blue-950 font-bold border-l-4 border-blue-400 shadow-2xs'
+                          : 'text-blue-100 hover:text-white hover:bg-white/10'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-red-700' : 'text-slate-400 group-hover:text-slate-700'}`} />
+                        <Icon className={`w-4 h-4 shrink-0 transition-colors ${isActive ? 'text-blue-700' : 'text-blue-300 group-hover:text-white'}`} />
                         <div className="truncate">
                           <span className="block truncate text-xs font-semibold">{item.label}</span>
-                          <span className={`block text-[10px] truncate ${isActive ? 'text-red-700/80 font-normal' : 'text-slate-400 font-normal'}`}>
+                          <span className={`block text-[10px] truncate ${isActive ? 'text-blue-700/80 font-normal' : 'text-blue-200/75 font-normal'}`}>
                             {item.desc}
                           </span>
                         </div>
                       </div>
 
                       {item.badge && (
-                        <span className="text-[9px] bg-red-600 text-white px-1.5 py-0.2 rounded-full font-bold shrink-0 ml-1">
+                        <span className="text-[9px] bg-blue-500 text-white px-1.5 py-0.2 rounded-full font-bold shrink-0 ml-1">
                           {item.badge}
                         </span>
                       )}
@@ -199,12 +199,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Bottom Sidebar Footer */}
-        <div className="p-3 border-t border-slate-200 bg-slate-50/80 text-[11px] text-slate-500 space-y-1">
-          <div className="flex items-center gap-1.5 font-semibold text-slate-700">
+        <div className="p-3 border-t border-[#31577b] bg-[#143553] text-[11px] text-blue-200 space-y-1">
+          <div className="flex items-center gap-1.5 font-semibold text-blue-100">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
             <span>१६औँ संशोधन प्रमाणीकृत</span>
           </div>
-          <p className="text-[10px] text-slate-600 leading-tight">
+          <p className="text-[10px] text-blue-200/80 leading-tight">
             सार्वजनिक निकायहरूका लागि आधिकारिक खरिद अनुपालन प्रणाली
           </p>
         </div>

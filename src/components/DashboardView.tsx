@@ -104,9 +104,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner / Welcome with Quick Action */}
-      <div className="bg-gradient-to-r from-red-900 via-slate-900 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+      <div className="bg-gradient-to-r from-[#1d4ed8] via-[#1e4f91] to-[#173b63] text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
         <div className="relative z-10 max-w-3xl">
-          <span className="text-red-400 font-semibold text-xs tracking-wider uppercase block mb-1">
+          <span className="text-blue-200 font-semibold text-xs tracking-wider uppercase block mb-1">
             सार्वजनिक निकायको खरिद सहयोगी ड्यासबोर्ड
           </span>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">

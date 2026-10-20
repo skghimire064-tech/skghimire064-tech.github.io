@@ -161,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={onOpenNewProject}
-              className="flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-medium text-white bg-red-700 hover:bg-red-800 rounded-lg shadow-xs transition-colors whitespace-nowrap"
+              className="flex items-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg shadow-xs transition-colors whitespace-nowrap"
             >
               <PlusCircle className="w-4 h-4" />
               <span className="hidden sm:inline">नयाँ खरिद प्रक्रिया</span>

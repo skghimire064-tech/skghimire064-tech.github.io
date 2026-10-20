@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import dashboardImage from '../../image.jpeg';
 import { 
   PlusCircle, 
   Briefcase, 
@@ -10,7 +11,6 @@ import {
   ArrowUpRight, 
   ChevronRight,
   Filter,
-  Layers,
   Calendar,
   X,
   Printer,
@@ -104,8 +104,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Banner / Welcome with Quick Action */}
-      <div className="bg-gradient-to-r from-[#1d4ed8] via-[#1e4f91] to-[#173b63] text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
-        <div className="relative z-10 max-w-3xl">
+      <div className="bg-gradient-to-r from-[#2563eb] via-[#1e4f91] to-[#173b63] text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+        <div className="relative z-10 max-w-[58%]">
           <span className="text-blue-200 font-semibold text-xs tracking-wider uppercase block mb-1">
             सार्वजनिक निकायको खरिद सहयोगी ड्यासबोर्ड
           </span>
@@ -119,7 +119,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           <div className="mt-5 flex items-center gap-3 flex-wrap">
             <button
               onClick={onOpenNewProjectModal}
-              className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold text-sm rounded-lg shadow-sm flex items-center gap-2 transition-colors whitespace-nowrap"
+              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm rounded-lg shadow-sm flex items-center gap-2 transition-colors whitespace-nowrap"
             >
               <PlusCircle className="w-4 h-4" />
               नयाँ खरिद आयोजना थप्नुहोस्
@@ -131,9 +131,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
         </div>
 
-        {/* Decorative subtle background pattern */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none flex items-center justify-center">
-          <Layers className="w-80 h-80 text-white" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-[42%]">
+          <img
+            src={dashboardImage}
+            alt=""
+            aria-hidden="true"
+            className="h-full w-full object-cover object-right"
+          />
+          <div className="absolute inset-0 bg-[#1e4f91]/10 mix-blend-multiply" />
+          <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1e4f91] via-[#1e4f91]/40 to-transparent" />
         </div>
       </div>
 

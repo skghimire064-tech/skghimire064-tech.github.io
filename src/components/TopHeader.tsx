@@ -6,7 +6,8 @@ import {
   Printer, 
   ChevronRight,
   ShieldCheck,
-  Sparkles
+  Sparkles,
+  LogOut
 } from 'lucide-react';
 
 interface TopHeaderProps {
@@ -14,6 +15,7 @@ interface TopHeaderProps {
   onToggleSidebarMobile: () => void;
   onOpenSearch: () => void;
   onOpenNewProject: () => void;
+  onLogout: () => void;
 }
 
 const TAB_TITLES: Record<string, { title: string; category: string }> = {
@@ -21,7 +23,7 @@ const TAB_TITLES: Record<string, { title: string; category: string }> = {
   advisor: { title: 'खरिद सल्लाहकार (Wizard)', category: 'सल्लाहकार' },
   methods: { title: 'खरिदका सम्पूर्ण विधिहरू', category: 'विधिहरू' },
   'method-checklists': { title: 'विधि अनुसारको चेकलिस्ट', category: 'अनुपालन' },
-  'law-corpus': { title: 'ऐन तथा नियमावली संग्रह', category: 'कानुनी संग्रह' },
+  'law-corpus': { title: 'ऐन तथा नियमावली संग्रह', category: 'कानूनी संग्रह' },
   amendments: { title: '१६औँ संशोधनका विशेषताहरू', category: 'संशोधन' },
   stages: { title: 'प्रक्रियागत ७ चरणहरू', category: 'चरणहरू' },
   templates: { title: 'कागजात ढाँचा भण्डार', category: 'ढाँचाहरू' },
@@ -37,6 +39,7 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
   onToggleSidebarMobile,
   onOpenSearch,
   onOpenNewProject,
+  onLogout,
 }) => {
   const current = TAB_TITLES[activeTab] || { title: 'सार्वजनिक खरिद सहयोगी', category: 'प्रणाली' };
 
@@ -91,6 +94,15 @@ export const TopHeader: React.FC<TopHeaderProps> = ({
           <PlusCircle className="w-4 h-4" />
           <span className="hidden sm:inline">नयाँ खरिद प्रक्रिया</span>
           <span className="sm:hidden">नयाँ</span>
+        </button>
+
+        <button
+          onClick={onLogout}
+          className="p-2 text-blue-100 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+          title="लगआउट"
+          aria-label="लगआउट"
+        >
+          <LogOut className="w-4 h-4" />
         </button>
       </div>
     </header>

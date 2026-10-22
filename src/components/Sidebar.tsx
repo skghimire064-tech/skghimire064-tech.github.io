@@ -16,8 +16,10 @@ import {
   X,
   ChevronRight,
   ExternalLink,
-  HelpCircle
+  HelpCircle,
+  Users
 } from 'lucide-react';
+import { UserRole } from '../types/auth';
 
 interface SidebarProps {
   activeTab: string;
@@ -26,6 +28,7 @@ interface SidebarProps {
   onCloseMobile: () => void;
   onOpenSearch: () => void;
   onOpenNewProject: () => void;
+  userRole: UserRole;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -35,44 +38,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onCloseMobile,
   onOpenSearch,
   onOpenNewProject,
+  userRole,
 }) => {
   const navGroups = [
     {
       groupTitle: 'व्यवस्थापन तथा सल्लाह',
       items: [
-        { id: 'dashboard', label: 'ड्यासबोर्ड', icon: Briefcase, desc: 'चालु योजना तथा प्रगति' },
-        { id: 'advisor', label: 'खरिद सल्लाहकार', icon: Sparkles, desc: '३ चरणमा कानूनी मार्गनिर्देशन', badge: 'नयाँ' },
+        { id: 'dashboard', label: 'ड्यासबोर्ड', icon: Briefcase, desc: ' ' },
+        { id: 'advisor', label: 'खरिद सल्लाहकार', icon: Sparkles, desc: ' ', badge: ' ' },
+        ...(userRole === 'admin'
+          ? [{ id: 'user-management', label: 'प्रयोगकर्ता व्यवस्थापन', icon: Users, desc: ' ' }]
+          : []),
       ],
     },
     {
       groupTitle: 'राय तथा पुनरावलोकन',
       items: [
-        { id: 'ppmo-pprc', label: 'PPMO राय र PPRC निर्णय', icon: MessageSquareText, desc: 'विषयगत खोज तथा तुलना' },
+        { id: 'ppmo-pprc', label: 'PPMO राय र PPRC निर्णय', icon: MessageSquareText, desc: ' ' },
       ],
     },
     {
       groupTitle: 'खरिद विधि तथा अनुपालन',
       items: [
-        { id: 'methods', label: 'खरिद विधिहरू', icon: Layers, desc: '१६+ खरिद विधिहरू' },
-        { id: 'method-checklists', label: 'विधिगत चेकलिस्ट', icon: FileCheck2, desc: 'हरेक विधिको रुजु सूची' },
-        { id: 'stages', label: 'प्रक्रियागत ७ चरणहरू', icon: ClipboardList, desc: 'तयारीदेखि फरफारकसम्म' },
-        { id: 'checklists', label: 'एकीकृत चेकलिस्ट', icon: ShieldCheck, desc: 'मास्टर अडिट चेकलिष्ट' },
+        { id: 'methods', label: 'खरिद विधिहरू', icon: Layers, desc: ' ' },
+        { id: 'method-checklists', label: 'विधिगत चेकलिस्ट', icon: FileCheck2, desc: ' ' },
+        { id: 'stages', label: 'प्रक्रियागत ७ चरणहरू', icon: ClipboardList, desc: ' ' },
+        { id: 'checklists', label: 'एकीकृत चेकलिस्ट', icon: ShieldCheck, desc: ' ' },
       ],
     },
     {
       groupTitle: 'कानूनी संग्रह तथा संशोधन',
       items: [
-        { id: 'law-corpus', label: 'ऐन/नियमका व्यवस्थाहरु', icon: BookOpen, desc: 'दफा १ देखि ७६ र नियमहरू', badge: 'पूर्ण' },
-        { id: 'amendments', label: '१६औँ संशोधनका विशेषता', icon: ShieldCheck, desc: 'नयाँ परिवर्तन तथा तुलना' },
-        { id: 'clauses', label: 'महत्वपूर्ण दफाहरू', icon: BookOpen, desc: 'प्रमुख कानूनी व्यवस्थाहरू' },
-        { id: 'schedules', label: 'अनुसूचीहरू (१–८)', icon: Scale, desc: 'लागत र सूचना ढाँचा' },
+        { id: 'law-corpus', label: 'ऐन/नियमका व्यवस्थाहरु', icon: BookOpen, desc: ' ', badge: ' ' },
+        { id: 'amendments', label: '१६औँ संशोधनका विशेषता', icon: ShieldCheck, desc:' ' },
+        { id: 'clauses', label: 'महत्वपूर्ण दफाहरू', icon: BookOpen, desc: ' ' },
+        { id: 'schedules', label: 'अनुसूचीहरू (१–८)', icon: Scale, desc: ' ' },
       ],
     },
     {
       groupTitle: 'नमूना कागजात',
       items: [
-        { id: 'templates', label: 'कागजात ढाँचाहरु', icon: FileText, desc: 'सूचना, सम्झौता र फारामहरू (Word)' },
-        { id: 'calculator', label: 'थ्रेसहोल्ड क्याल्कुलेटर', icon: Calculator, desc: 'अख्तियारी र धरौटी गणना' },
+        { id: 'templates', label: 'कागजात ढाँचाहरु', icon: FileText, desc: ' ' },
+        { id: 'calculator', label: 'थ्रेसहोल्ड क्याल्कुलेटर', icon: Calculator, desc: ' ' },
       ],
     },
   ];
@@ -202,10 +209,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-3 border-t border-[#31577b] bg-[#143553] text-[11px] text-blue-200 space-y-1">
           <div className="flex items-center gap-1.5 font-semibold text-blue-100">
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-            <span>१६औँ संशोधन प्रमाणीकृत</span>
+            <span>१६औँ संशोधन समावेश</span>
           </div>
           <p className="text-[10px] text-blue-200/80 leading-tight">
-            सार्वजनिक निकायहरूका लागि आधिकारिक खरिद अनुपालन प्रणाली
+            सार्वजनिक खरिदका लागि सहयोगी प्रणाली
           </p>
         </div>
       </aside>

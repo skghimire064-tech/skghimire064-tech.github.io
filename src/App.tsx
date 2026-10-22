@@ -20,12 +20,56 @@ import { LegalClausesView } from './components/LegalClausesView';
 import { SchedulesView } from './components/SchedulesView';
 import { SearchAndFilterModal } from './components/SearchAndFilterModal';
 import { NewProjectModal } from './components/NewProjectModal';
+import { LoginPage } from './components/LoginPage';
+import { UserManagementView } from './components/UserManagementView';
 import { INITIAL_TRACKED_PROJECTS } from './data/procurementData';
 import { TrackedProject } from './types/procurement';
+import { AppUser, DEFAULT_USERS, UserRole } from './types/auth';
 
 const PpmoPprcGuide = lazy(() => import('../ppmo_pprc/src/App'));
 
-export default function App() {
+const isUserRole = (role: unknown): role is UserRole => role === 'admin' || role === 'user';
+
+const isAppUser = (value: unknown): value is AppUser => {
+  if (!value || typeof value !== 'object') return false;
+  const user = value as Partial<AppUser>;
+  return typeof user.id === 'string'
+    && typeof user.username === 'string'
+    && typeof user.password === 'string'
+    && isUserRole(user.role);
+};
+
+const loadUsers = (): AppUser[] => {
+  try {
+    const saved = localStorage.getItem('procurement_guide_users');
+    if (saved) {
+      const parsed: unknown = JSON.parse(saved);
+      if (Array.isArray(parsed)) {
+        const validUsers = parsed.filter(isAppUser);
+        if (validUsers.some((user) => user.role === 'admin')) return validUsers;
+      }
+    }
+  } catch (error) {
+    console.error('प्रयोगकर्ता विवरण लोड गर्न सकिएन।', error);
+  }
+  return DEFAULT_USERS.map((user) => ({ ...user }));
+};
+
+function ProcurementApp({
+  currentUser,
+  users,
+  onLogout,
+  onAddUser,
+  onUpdateUser,
+  onDeleteUser,
+}: {
+  currentUser: AppUser;
+  users: AppUser[];
+  onLogout: () => void;
+  onAddUser: (user: AppUser) => void;
+  onUpdateUser: (user: AppUser) => void;
+  onDeleteUser: (userId: string) => void;
+}) {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
@@ -53,6 +97,12 @@ export default function App() {
       console.error(e);
     }
   }, [projects]);
+
+  useEffect(() => {
+    if (currentUser.role !== 'admin' && activeTab === 'user-management') {
+      setActiveTab('dashboard');
+    }
+  }, [activeTab, currentUser.role]);
 
   // Global keyboard shortcut: "/" or "Ctrl+K" to open search
   useEffect(() => {
@@ -108,6 +158,7 @@ export default function App() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        userRole={currentUser.role}
         isOpenMobile={isSidebarMobileOpen}
         onCloseMobile={() => setIsSidebarMobileOpen(false)}
         onOpenSearch={() => setIsSearchOpen(true)}
@@ -122,6 +173,7 @@ export default function App() {
           onToggleSidebarMobile={() => setIsSidebarMobileOpen(true)}
           onOpenSearch={() => setIsSearchOpen(true)}
           onOpenNewProject={() => setIsNewProjectOpen(true)}
+          onLogout={onLogout}
         />
 
         {/* Viewport Content */}
@@ -198,6 +250,16 @@ export default function App() {
             <SchedulesView />
           )}
 
+          {activeTab === 'user-management' && currentUser.role === 'admin' && (
+            <UserManagementView
+              users={users}
+              currentUser={currentUser}
+              onAddUser={onAddUser}
+              onUpdateUser={onUpdateUser}
+              onDeleteUser={onDeleteUser}
+            />
+          )}
+
           {activeTab === 'ppmo-pprc' && (
             <Suspense fallback={<div role="status" className="py-8 text-center text-sm text-slate-500">PPMO राय र PPRC निर्णय लोड हुँदैछ...</div>}>
               <PpmoPprcGuide embedded />
@@ -212,7 +274,7 @@ export default function App() {
               <div className="w-5 h-5 rounded-md bg-red-700 text-white flex items-center justify-center font-bold text-[10px]">
                 ख
               </div>
-              <span className="font-semibold text-slate-800">सार्वजनिक खरिद सहयोगी - नेपाल</span>
+              <span className="font-semibold text-slate-800">सार्वजनिक खरिद सहयोगी</span>
               <span>·</span>
               <span className="text-[11px] text-slate-500">
                 सार्वजनिक खरिद ऐन २०६३ (दोस्रो संशोधनसहित) र नियमावली २०६४ (१६औँ संशोधन) मा आधारित
@@ -254,5 +316,74 @@ export default function App() {
         onAddProject={handleAddProject}
       />
     </div>
+  );
+}
+
+export default function App() {
+  const [users, setUsers] = useState<AppUser[]>(loadUsers);
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(() => {
+    try {
+      const saved = sessionStorage.getItem('procurement_guide_user');
+      if (!saved) return null;
+      const parsed: unknown = JSON.parse(saved);
+      return isAppUser(parsed) ? parsed : null;
+    } catch (error) {
+      console.error('लगइन सत्र लोड गर्न सकिएन।', error);
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('procurement_guide_users', JSON.stringify(users));
+    } catch (error) {
+      console.error('प्रयोगकर्ता विवरण सुरक्षित गर्न सकिएन।', error);
+    }
+  }, [users]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    const latestUser = users.find((user) => user.id === currentUser.id);
+    if (!latestUser) {
+      sessionStorage.removeItem('procurement_guide_user');
+      setCurrentUser(null);
+      return;
+    }
+    if (latestUser !== currentUser) {
+      setCurrentUser(latestUser);
+      sessionStorage.setItem('procurement_guide_user', JSON.stringify(latestUser));
+    }
+  }, [users, currentUser]);
+
+  if (!currentUser) {
+    return (
+      <LoginPage
+        users={users}
+        onLogin={(user) => {
+          sessionStorage.setItem('procurement_guide_user', JSON.stringify(user));
+          setCurrentUser(user);
+        }}
+      />
+    );
+  }
+
+  const handleUpdateUser = (updatedUser: AppUser) => {
+    setUsers((previousUsers) => previousUsers.map((user) => (
+      user.id === updatedUser.id ? updatedUser : user
+    )));
+  };
+
+  return (
+    <ProcurementApp
+      currentUser={currentUser}
+      users={users}
+      onAddUser={(user) => setUsers((previousUsers) => [...previousUsers, user])}
+      onUpdateUser={handleUpdateUser}
+      onDeleteUser={(userId) => setUsers((previousUsers) => previousUsers.filter((user) => user.id !== userId))}
+      onLogout={() => {
+        sessionStorage.removeItem('procurement_guide_user');
+        setCurrentUser(null);
+      }}
+    />
   );
 }

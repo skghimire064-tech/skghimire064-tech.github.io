@@ -4,6 +4,7 @@ export interface PpmoOpinionRaw {
   date: string;
   subject: string;
   opinion: string;
+  type?: string;
   act?: string;
   rule?: string;
 }

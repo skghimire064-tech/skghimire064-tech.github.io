@@ -1,12 +1,11 @@
-import { ppmoOpsPart1, PpmoOpinionRaw } from './ppmoOpsPart1';
-import { ppmoOpsPart2 } from './ppmoOpsPart2';
-import { ppmoOpsPart3 } from './ppmoOpsPart3';
-import { ppmoOpsPart4 } from './ppmoOpsPart4';
-import { ppmoOpsPart5 } from './ppmoOpsPart5';
-import { ppmoOpsPart6 } from './ppmoOpsPart6';
-import { ppmoOpsPart7 } from './ppmoOpsPart7';
+import procurementGuideData from '../../procurement-guide-data.json';
+import constructionOpinions from '../../procurement-construction.json';
+import goodsOpinions from '../../procurement-goods.json';
+import servicesOpinions from '../../procurement-services.json';
+import miscellaneousOpinions from '../../procurement-misc.json';
 import { raya2080Opinions } from './raya2080Opinions';
 
+import { PpmoOpinionRaw } from './ppmoOpsPart1';
 import { pprcDecisionsPart1, PprcDecisionRaw } from './pprcDecisionsPart1';
 import { pprcDecisionsPart2 } from './pprcDecisionsPart2';
 import { pprcDecisionsPart3 } from './pprcDecisionsPart3';
@@ -15,22 +14,62 @@ import { pprcDecisionsPart5 } from './pprcDecisionsPart5';
 
 export type { PpmoOpinionRaw, PprcDecisionRaw };
 
-const existingPpmoOpinions: PpmoOpinionRaw[] = [
-  ...ppmoOpsPart1,
-  ...ppmoOpsPart2,
-  ...ppmoOpsPart3,
-  ...ppmoOpsPart4,
-  ...ppmoOpsPart5,
-  ...ppmoOpsPart6,
-  ...ppmoOpsPart7,
-];
-
 type Raya2080Opinion = (typeof raya2080Opinions)[number];
 
 const normalizeOpinionDate = (date: string) =>
   date.replace(/[^\p{L}\p{N}]/gu, '');
 const normalizeOpinionText = (text: string) =>
   text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+const getOpinionKey = (opinion: PpmoOpinionRaw) =>
+  `${normalizeOpinionDate(opinion.date)}:${normalizeOpinionText(
+    opinion.subject
+  )}:${normalizeOpinionText(opinion.opinion)}`;
+
+const existingPpmoOpinions: PpmoOpinionRaw[] = procurementGuideData.ops.map(
+  (opinion) => ({ ...opinion })
+);
+const existingOpinionIndexes = new Map(
+  existingPpmoOpinions.map((opinion, index) => [getOpinionKey(opinion), index])
+);
+const additionalPpmoOpinions: PpmoOpinionRaw[] = [];
+
+[
+  ...constructionOpinions.ops,
+  ...goodsOpinions.ops,
+  ...servicesOpinions.ops,
+  ...miscellaneousOpinions.ops,
+].forEach((sourceOpinion) => {
+  const opinion = {
+    ...sourceOpinion,
+    opinion: sourceOpinion.opinion ?? sourceOpinion.subject,
+  };
+  const key = getOpinionKey(opinion);
+  const existingIndex = existingOpinionIndexes.get(key);
+  if (existingIndex !== undefined) {
+    const isAdditional = existingIndex >= existingPpmoOpinions.length;
+    const opinionIndex = isAdditional
+      ? existingIndex - existingPpmoOpinions.length
+      : existingIndex;
+    const opinionList = isAdditional
+      ? additionalPpmoOpinions
+      : existingPpmoOpinions;
+    const existing = opinionList[opinionIndex];
+    opinionList[opinionIndex] = {
+      ...existing,
+      type: existing.type || opinion.type,
+      act: existing.act || opinion.act,
+      rule: existing.rule || opinion.rule,
+    };
+    return;
+  }
+
+  existingOpinionIndexes.set(
+    key,
+    existingPpmoOpinions.length + additionalPpmoOpinions.length
+  );
+  additionalPpmoOpinions.push(opinion);
+});
+
 const getRayaOpinionKey = (no: number, date: string) =>
   `${no}:${normalizeOpinionDate(date)}`;
 const getRayaOpinionDate = (opinion: Raya2080Opinion) => {
@@ -100,6 +139,7 @@ export const rawPpmoOpinions: PpmoOpinionRaw[] = [
             normalizeOpinionText(opinion.opinion))
     );
   }),
+  ...additionalPpmoOpinions,
 ];
 
 export const rawPprcDecisions: PprcDecisionRaw[] = [

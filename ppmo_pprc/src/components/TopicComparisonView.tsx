@@ -116,6 +116,12 @@ export const TopicComparisonView: React.FC<TopicComparisonViewProps> = ({
     setTimeout(() => setCopiedId(null), 1800);
   };
 
+  const handleQuickSearch = (keyword: string) => {
+    onGlobalSearchChange(globalSearch === keyword ? '' : keyword);
+    setOpsLimit(8);
+    setPpLimit(8);
+  };
+
   return (
     <div className="space-y-6">
       {/* Search & Topic Selection Control Bar */}
@@ -168,7 +174,9 @@ export const TopicComparisonView: React.FC<TopicComparisonViewProps> = ({
               return (
                 <button
                   key={kw}
-                  onClick={() => onGlobalSearchChange(active ? '' : kw)}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => handleQuickSearch(kw)}
                   className={`px-2.5 py-1 text-xs rounded-md transition-colors whitespace-nowrap ${
                     active
                       ? 'bg-slate-900 text-white font-medium'

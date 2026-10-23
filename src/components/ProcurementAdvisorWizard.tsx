@@ -125,10 +125,10 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
             <span>सजिलो खरिद सल्लाहकार (Procurement Decision Assistant)</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
-            "मलाई के खरिद गर्नु छ?" - ३ चरणमा उपयुक्त कानूनी मार्गदर्शन
+            "मलाई के खरिद गर्नु छ?" - ३ चरणमा उपयुक्त कानूनी जानकारी
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
-            कामको प्रकार, बजेट र अवस्था प्रविष्ट गरी कानून सम्मत खरिद विधि, स्वीकृति गर्ने अधिकारी, सूचना म्याद, धरौटी र आवश्यक कागजातको मार्गदर्शन हेर्नुहोस्।
+            कामको प्रकार, बजेट र अवस्था प्रविष्ट गरी कानून सम्मत खरिद विधि, स्वीकृति गर्ने अधिकारी, सूचना म्याद, धरौटी र आवश्यक कागजातको जानकारी लिनुहोस्।
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
               चरण १: तपाईं कुन प्रकृतिको खरिद गर्दै हुनुहुन्छ?
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              खरिद ऐन अनुसार प्रत्येक प्रकृतिको लागि फरक कानूनी कार्यविधि र सीमा तोकिएको छ।
+              खरिद कानून अनुसार प्रत्येक प्रकृतिको लागि फरक कानूनी कार्यविधि र सीमा तोकिएको छ।
             </p>
           </div>
 

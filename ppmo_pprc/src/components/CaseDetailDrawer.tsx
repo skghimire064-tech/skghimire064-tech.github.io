@@ -161,12 +161,12 @@ export const CaseDetailDrawer: React.FC<CaseDetailDrawerProps> = ({
               {copied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>प्रतिलिपि भयो</span>
+                  <span>कपी भयो</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5" />
-                  <span>उद्धरण कपी</span>
+                  <span>कपी गर्नुहोस्</span>
                 </>
               )}
             </button>

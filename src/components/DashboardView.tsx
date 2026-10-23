@@ -107,13 +107,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       <div className="bg-gradient-to-r from-[#2563eb] via-[#1e4f91] to-[#173b63] text-white rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
         <div className="relative z-10 max-w-[58%]">
           <span className="text-blue-200 font-semibold text-xs tracking-wider uppercase block mb-1">
-            सार्वजनिक निकायको खरिद सहयोगी ड्यासबोर्ड
+            सार्वजनिक खरिद सहयोगी
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-2xl font-extrabold tracking-tight">
             खरिद प्रक्रिया गाइड ड्यासबोर्ड
           </h1>
           <p className="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
-            सार्वजनिक खरिद ऐन, २०६३ र सार्वजनिक खरिद नियमावली, २०६४ (१६औँ संशोधन) बमोजिम निर्माण, मालसामान वा सेवा खरिद गर्दा अपनाउनुपर्ने कानूनी प्रक्रिया, अख्तियारी, आवश्यक कागजात र चेकलिस्ट।
+            सार्वजनिक खरिद ऐन, २०६३ र सार्वजनिक खरिद नियमावली, २०६४ (१६औँ संशोधन) बमोजिम निर्माण, मालसामान वा सेवा खरिद गर्दा अपनाउनुपर्ने कानूनी प्रक्रिया, स्वीकृत गर्ने अधिकारी, आवश्यक कागजात र चेकलिस्ट।
           </p>
 
           <div className="mt-5 flex items-center gap-3 flex-wrap">
@@ -183,7 +183,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span className="text-xs text-slate-500">योजना</span>
           </div>
           <div className="mt-1 text-[11px] text-blue-700 font-medium">
-            म्याद जारी (चरण ३-४)
+            सूचना जारी (चरण ३-४)
           </div>
         </div>
 
@@ -224,7 +224,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               खरिद आयोजनाहरूको सूची तथा चरणबद्ध स्थिति
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              प्रत्येक आयोजनामा क्लिक गरी विस्तृत प्रक्रियागत चरण र अनिवार्य कानूनी चेकलिस्ट हेर्नुहोस् र सम्पादन गर्नुहोस्।
+              आयोजनामा क्लिक गरी विस्तृत प्रक्रियागत चरण र कानूनी व्यवस्थाहरुको चेकलिस्ट हेर्नुहोस् र सम्पादन गर्नुहोस्।
             </p>
           </div>
 
@@ -434,7 +434,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       : 'border-transparent text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  अनुपालन चेकलिस्ट ({Object.keys(selectedProject.checklistStatus).filter(k => selectedProject.checklistStatus[k]).length} सम्पन्न)
+                  परिपालना चेकलिस्ट ({Object.keys(selectedProject.checklistStatus).filter(k => selectedProject.checklistStatus[k]).length} सम्पन्न)
                 </button>
                 <button
                   onClick={() => setActiveTabInDrawer('info')}
@@ -444,7 +444,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       : 'border-transparent text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  कानूनी सर्त तथा अख्तियारी
+                  कानूनी व्यवस्था तथा स्वीकृत गर्ने अधिकारी
                 </button>
               </div>
 
@@ -551,7 +551,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-xs text-slate-600 pb-2 border-b border-slate-100">
                     <span>
-                      यस आयोजनाका लागि लागू हुने अनिवार्य कानूनी मापदण्डहरू टिक लगाउनुहोस्।
+                      यस आयोजनाका लागि लागू हुने कानूनी व्यवस्थाहरू टिक लगाउनुहोस्।
                     </span>
                     <span className="font-semibold text-slate-900">
                       प्रगति: {selectedProject.progressPercent}%
@@ -617,7 +617,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <div className="space-y-4">
                         <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                           <h4 className="text-sm font-bold text-slate-900 mb-2">
-                            कानूनी अख्तियारी तथा सीमा विवरण
+                            स्वीकृत गर्ने अधिकारी तथा रकमको सीमा
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div className="p-2.5 bg-white rounded-lg border border-slate-200">

@@ -9,17 +9,24 @@ import {
   AlertTriangle, 
   ChevronRight,
   ShieldCheck,
-  Scale
+  Scale,
+  ExternalLink
 } from 'lucide-react';
 import { PROCUREMENT_STAGES } from '../data/procurementData';
+import { EGP_GUIDELINE_SECTIONS } from '../data/egpGuidelines';
 import { ProcurementStage } from '../types/procurement';
 
 interface StagesGuideViewProps {
   onSelectMethod?: (methodId: string) => void;
+  onNavigateToEgpGuide?: () => void;
 }
 
-export const StagesGuideView: React.FC<StagesGuideViewProps> = ({ onSelectMethod }) => {
+export const StagesGuideView: React.FC<StagesGuideViewProps> = ({
+  onSelectMethod,
+  onNavigateToEgpGuide,
+}) => {
   const [activeStage, setActiveStage] = useState<ProcurementStage>(PROCUREMENT_STAGES[0]);
+  const egpSections = EGP_GUIDELINE_SECTIONS.filter((section) => section.stageId === activeStage.id);
 
   return (
     <div className="space-y-6">
@@ -125,6 +132,39 @@ export const StagesGuideView: React.FC<StagesGuideViewProps> = ({ onSelectMethod
               ))}
             </div>
           </div>
+
+          {/* Required Documents in this stage */}
+          {egpSections.length > 0 && (
+            <section className="rounded-xl border border-blue-200 bg-blue-50/50 p-4 sm:p-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-sm font-bold text-blue-950">यस चरणका e-GP निर्देशिका बुँदा</h4>
+                  <p className="mt-1 text-xs text-blue-900">
+                    निर्देशिका, २०८० का सम्बन्धित कार्यप्रवाह र दफा:
+                  </p>
+                </div>
+                {onNavigateToEgpGuide && (
+                  <button
+                    type="button"
+                    onClick={onNavigateToEgpGuide}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 bg-white px-3 py-2 text-xs font-semibold text-blue-800 hover:bg-blue-100"
+                  >
+                    विस्तृत निर्देशिका
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+              <div className="mt-3 space-y-3">
+                {egpSections.map((section) => (
+                  <div key={section.id} className="rounded-lg border border-blue-100 bg-white p-3">
+                    <h5 className="text-xs font-bold text-slate-900">{section.title}</h5>
+                    <p className="mt-1 text-xs leading-relaxed text-slate-700">{section.summary}</p>
+                    <p className="mt-2 text-[11px] font-semibold text-blue-900">{section.legalReference}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Required Documents in this stage */}
           <div>

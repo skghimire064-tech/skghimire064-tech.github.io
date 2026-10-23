@@ -17,7 +17,8 @@ import {
   ChevronRight,
   ExternalLink,
   HelpCircle,
-  Users
+  Users,
+  FileCheck,
 } from 'lucide-react';
 import { UserRole } from '../types/auth';
 
@@ -63,6 +64,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'methods', label: 'खरिद विधिहरू', icon: Layers, desc: ' ' },
         { id: 'method-checklists', label: 'विधिगत चेकलिस्ट', icon: FileCheck2, desc: ' ' },
         { id: 'stages', label: 'प्रक्रियागत ७ चरणहरू', icon: ClipboardList, desc: ' ' },
+        { id: 'egp-guidelines', label: 'e-GP निर्देशिका, २०८०', icon: FileCheck, desc: ' ' },
         { id: 'checklists', label: 'एकीकृत चेकलिस्ट', icon: ShieldCheck, desc: ' ' },
       ],
     },

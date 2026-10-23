@@ -13,6 +13,7 @@ import { MethodChecklistsView } from './components/MethodChecklistsView';
 import { CompleteLawCorpusView } from './components/CompleteLawCorpusView';
 import { AmendmentsHighlightView } from './components/AmendmentsHighlightView';
 import { StagesGuideView } from './components/StagesGuideView';
+import { EgpGuidelinesView } from './components/EgpGuidelinesView';
 import { ChecklistsView } from './components/ChecklistsView';
 import { TemplatesView } from './components/TemplatesView';
 import { CalculatorView } from './components/CalculatorView';
@@ -272,7 +273,12 @@ function ProcurementApp({
           {activeTab === 'stages' && (
             <StagesGuideView
               onSelectMethod={navigateToMethodWithId}
+              onNavigateToEgpGuide={() => setActiveTab('egp-guidelines')}
             />
+          )}
+
+          {activeTab === 'egp-guidelines' && (
+            <EgpGuidelinesView />
           )}
 
           {activeTab === 'templates' && (

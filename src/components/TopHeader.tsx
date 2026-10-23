@@ -26,6 +26,7 @@ const TAB_TITLES: Record<string, { title: string; category: string }> = {
   'law-corpus': { title: 'ऐन तथा नियमावली संग्रह', category: 'कानूनी संग्रह' },
   amendments: { title: '१६औँ संशोधनका विशेषताहरू', category: 'संशोधन' },
   stages: { title: 'प्रक्रियागत ७ चरणहरू', category: 'चरणहरू' },
+  'egp-guidelines': { title: 'विद्युतीय खरिद प्रणाली सञ्चालन निर्देशिका, २०८०', category: 'e-GP अनुपालन' },
   templates: { title: 'कागजात ढाँचा भण्डार', category: 'ढाँचाहरू' },
   checklists: { title: 'एकीकृत अनुपालन चेकलिस्ट', category: 'चेकलिस्ट' },
   calculator: { title: 'सीमा तथा अख्तियारी क्याल्कुलेटर', category: 'उपकरण' },

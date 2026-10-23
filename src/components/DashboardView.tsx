@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import dashboardImage from '../../image.jpeg';
+import dashboardImage from '../../image1.jpeg';
 import { 
   PlusCircle, 
   Briefcase, 

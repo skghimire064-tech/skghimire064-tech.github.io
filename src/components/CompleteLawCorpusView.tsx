@@ -120,7 +120,7 @@ export const CompleteLawCorpusView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-700 uppercase tracking-wide">
             <BookOpen className="w-4 h-4" />
-            <span>सार्वजनिक खरिद ऐन तथा नियमावलीको पूर्ण कानुनी संग्रह</span>
+            <span>सार्वजनिक खरिद ऐन तथा नियमावलीको पूर्ण कानूनी संग्रह</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
             ऐनका दफा र नियमावलीका नियम
@@ -151,7 +151,7 @@ export const CompleteLawCorpusView: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-2" role="tablist" aria-label="कानुनी स्रोत छान्नुहोस्">
+      <div className="flex flex-wrap gap-2" role="tablist" aria-label="कानूनी स्रोत छान्नुहोस्">
         <button
           type="button"
           role="tab"
@@ -370,7 +370,7 @@ export const CompleteLawCorpusView: React.FC = () => {
 
                   {/* 1. Official Summary */}
                   <div className="text-xs sm:text-sm text-slate-700 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200/80">
-                    <span className="font-bold text-slate-900 block mb-0.5">कानुनी व्यवस्था (Legal Provision):</span>
+                    <span className="font-bold text-slate-900 block mb-0.5">कानूनी व्यवस्था (Legal Provision):</span>
                     {sec.officialSummary}
                   </div>
 
@@ -387,7 +387,7 @@ export const CompleteLawCorpusView: React.FC = () => {
                   <div className="p-3 bg-red-50/40 rounded-xl border border-red-100 text-xs text-red-950 flex items-start gap-2.5">
                     <ShieldAlert className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-bold text-red-900 block mb-0.5">अनिवार्य पालना गर्नुपर्ने कानुनी सर्त (Compliance Rule):</span>
+                      <span className="font-bold text-red-900 block mb-0.5">अनिवार्य पालना गर्नुपर्ने कानूनी सर्त (Compliance Rule):</span>
                       <p>{sec.complianceRule}</p>
                     </div>
                   </div>

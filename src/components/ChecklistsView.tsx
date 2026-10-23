@@ -83,7 +83,7 @@ export const ChecklistsView: React.FC<ChecklistsViewProps> = ({
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-red-700 uppercase tracking-wide">
             <FileCheck2 className="w-4 h-4" />
-            <span>कानुनी अनुपालन प्रमाणीकरण</span>
+            <span>कानूनी अनुपालन प्रमाणीकरण</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
             सार्वजनिक खरिद एकीकृत अनुपालन चेकलिस्ट (Master Compliance Checklist)

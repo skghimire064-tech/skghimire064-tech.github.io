@@ -22,53 +22,33 @@ import { SearchAndFilterModal } from './components/SearchAndFilterModal';
 import { NewProjectModal } from './components/NewProjectModal';
 import { LoginPage } from './components/LoginPage';
 import { UserManagementView } from './components/UserManagementView';
-import { INITIAL_TRACKED_PROJECTS } from './data/procurementData';
 import { TrackedProject } from './types/procurement';
-import { AppUser, DEFAULT_USERS, UserRole } from './types/auth';
+import { AppUser, ManagedUserInput } from './types/auth';
+import {
+  createManagedUser,
+  createProject,
+  deleteManagedUser,
+  listManagedUsers,
+  listProjects,
+  restoreSessionUser,
+  signUpWithEmail,
+  signInWithUsername,
+  signOut,
+  updateManagedUser,
+  updateProject,
+} from './lib/supabaseApi';
+import { isSupabaseConfigured, supabase } from './lib/supabase';
 
 const PpmoPprcGuide = lazy(() => import('../ppmo_pprc/src/App'));
 
-const isUserRole = (role: unknown): role is UserRole => role === 'admin' || role === 'user';
-
-const isAppUser = (value: unknown): value is AppUser => {
-  if (!value || typeof value !== 'object') return false;
-  const user = value as Partial<AppUser>;
-  return typeof user.id === 'string'
-    && typeof user.username === 'string'
-    && typeof user.password === 'string'
-    && isUserRole(user.role);
-};
-
-const loadUsers = (): AppUser[] => {
-  try {
-    const saved = localStorage.getItem('procurement_guide_users');
-    if (saved) {
-      const parsed: unknown = JSON.parse(saved);
-      if (Array.isArray(parsed)) {
-        const validUsers = parsed.filter(isAppUser);
-        if (validUsers.some((user) => user.role === 'admin')) return validUsers;
-      }
-    }
-  } catch (error) {
-    console.error('प्रयोगकर्ता विवरण लोड गर्न सकिएन।', error);
-  }
-  return DEFAULT_USERS.map((user) => ({ ...user }));
-};
-
 function ProcurementApp({
   currentUser,
-  users,
   onLogout,
-  onAddUser,
-  onUpdateUser,
-  onDeleteUser,
+  authError,
 }: {
   currentUser: AppUser;
-  users: AppUser[];
   onLogout: () => void;
-  onAddUser: (user: AppUser) => void;
-  onUpdateUser: (user: AppUser) => void;
-  onDeleteUser: (userId: string) => void;
+  authError: string;
 }) {
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [isSidebarMobileOpen, setIsSidebarMobileOpen] = useState<boolean>(false);
@@ -76,27 +56,51 @@ function ProcurementApp({
   const [isNewProjectOpen, setIsNewProjectOpen] = useState<boolean>(false);
   const [selectedMethodId, setSelectedMethodId] = useState<string | null>(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
-
-  // Projects state persistent in localStorage
-  const [projects, setProjects] = useState<TrackedProject[]>(() => {
-    try {
-      const saved = localStorage.getItem('tracked_procurement_projects');
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    return INITIAL_TRACKED_PROJECTS;
-  });
+  const [projects, setProjects] = useState<TrackedProject[]>([]);
+  const [users, setUsers] = useState<AppUser[]>([]);
+  const [isProjectsLoading, setIsProjectsLoading] = useState(true);
+  const [isUsersLoading, setIsUsersLoading] = useState(false);
+  const [dataError, setDataError] = useState('');
+  const [userManagementError, setUserManagementError] = useState('');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('tracked_procurement_projects', JSON.stringify(projects));
-    } catch (e) {
-      console.error(e);
-    }
-  }, [projects]);
+    let isCurrent = true;
+    setIsProjectsLoading(true);
+    setDataError('');
+    void listProjects()
+      .then((loadedProjects) => {
+        if (isCurrent) setProjects(loadedProjects);
+      })
+      .catch((error: unknown) => {
+        if (isCurrent) setDataError(error instanceof Error ? error.message : 'आयोजना विवरण लोड गर्न सकिएन।');
+      })
+      .finally(() => {
+        if (isCurrent) setIsProjectsLoading(false);
+      });
+    return () => {
+      isCurrent = false;
+    };
+  }, [currentUser.id]);
+
+  useEffect(() => {
+    if (currentUser.role !== 'admin' || activeTab !== 'user-management') return;
+    let isCurrent = true;
+    setIsUsersLoading(true);
+    setUserManagementError('');
+    void listManagedUsers()
+      .then((loadedUsers) => {
+        if (isCurrent) setUsers(loadedUsers);
+      })
+      .catch((error: unknown) => {
+        if (isCurrent) setUserManagementError(error instanceof Error ? error.message : 'प्रयोगकर्ता सूची लोड गर्न सकिएन।');
+      })
+      .finally(() => {
+        if (isCurrent) setIsUsersLoading(false);
+      });
+    return () => {
+      isCurrent = false;
+    };
+  }, [activeTab, currentUser.role]);
 
   useEffect(() => {
     if (currentUser.role !== 'admin' && activeTab === 'user-management') {
@@ -119,12 +123,44 @@ function ProcurementApp({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen]);
 
-  const handleUpdateProject = (updated: TrackedProject) => {
-    setProjects((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+  const handleUpdateProject = async (updated: TrackedProject) => {
+    setDataError('');
+    try {
+      const savedProject = await updateProject(updated);
+      setProjects((previous) => previous.map((project) => (
+        project.id === savedProject.id ? savedProject : project
+      )));
+    } catch (error) {
+      setDataError(error instanceof Error ? error.message : 'आयोजना परिवर्तन सुरक्षित गर्न सकिएन।');
+    }
   };
 
-  const handleAddProject = (newProject: TrackedProject) => {
-    setProjects((prev) => [newProject, ...prev]);
+  const handleAddProject = async (newProject: TrackedProject) => {
+    setDataError('');
+    try {
+      const savedProject = await createProject(newProject, currentUser.id);
+      setProjects((previous) => [savedProject, ...previous]);
+    } catch (error) {
+      setDataError(error instanceof Error ? error.message : 'नयाँ आयोजना सुरक्षित गर्न सकिएन।');
+      throw error;
+    }
+  };
+
+  const handleAddUser = async (input: ManagedUserInput) => {
+    const createdUser = await createManagedUser(input);
+    setUsers((previous) => [...previous, createdUser]);
+    return createdUser;
+  };
+
+  const handleUpdateUser = async (id: string, input: ManagedUserInput) => {
+    const updatedUser = await updateManagedUser(id, input);
+    setUsers((previous) => previous.map((user) => (user.id === id ? updatedUser : user)));
+    return updatedUser;
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    await deleteManagedUser(id);
+    setUsers((previous) => previous.filter((user) => user.id !== id));
   };
 
   const handleSelectSearchResult = (category: 'method' | 'stage' | 'checklist' | 'clause' | 'schedule', id: string) => {
@@ -178,6 +214,22 @@ function ProcurementApp({
 
         {/* Viewport Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+          {authError && (
+            <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+              {authError}
+            </p>
+          )}
+
+          {dataError && (
+            <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+              {dataError}
+            </p>
+          )}
+
+          {isProjectsLoading && activeTab === 'dashboard' && (
+            <p role="status" className="mb-4 text-sm text-slate-600">आयोजना विवरण लोड हुँदैछ...</p>
+          )}
+
           {activeTab === 'dashboard' && (
             <DashboardView
               projects={projects}
@@ -251,13 +303,18 @@ function ProcurementApp({
           )}
 
           {activeTab === 'user-management' && currentUser.role === 'admin' && (
-            <UserManagementView
-              users={users}
-              currentUser={currentUser}
-              onAddUser={onAddUser}
-              onUpdateUser={onUpdateUser}
-              onDeleteUser={onDeleteUser}
-            />
+            isUsersLoading
+              ? <p role="status" className="text-sm text-slate-600">प्रयोगकर्ता सूची लोड हुँदैछ...</p>
+              : (
+                <UserManagementView
+                  users={users}
+                  currentUser={currentUser}
+                  error={userManagementError}
+                  onAddUser={handleAddUser}
+                  onUpdateUser={handleUpdateUser}
+                  onDeleteUser={handleDeleteUser}
+                />
+              )
           )}
 
           {activeTab === 'ppmo-pprc' && (
@@ -320,69 +377,89 @@ function ProcurementApp({
 }
 
 export default function App() {
-  const [users, setUsers] = useState<AppUser[]>(loadUsers);
-  const [currentUser, setCurrentUser] = useState<AppUser | null>(() => {
-    try {
-      const saved = sessionStorage.getItem('procurement_guide_user');
-      if (!saved) return null;
-      const parsed: unknown = JSON.parse(saved);
-      return isAppUser(parsed) ? parsed : null;
-    } catch (error) {
-      console.error('लगइन सत्र लोड गर्न सकिएन।', error);
-      return null;
-    }
-  });
+  const [currentUser, setCurrentUser] = useState<AppUser | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState('');
 
   useEffect(() => {
-    try {
-      localStorage.setItem('procurement_guide_users', JSON.stringify(users));
-    } catch (error) {
-      console.error('प्रयोगकर्ता विवरण सुरक्षित गर्न सकिएन।', error);
-    }
-  }, [users]);
-
-  useEffect(() => {
-    if (!currentUser) return;
-    const latestUser = users.find((user) => user.id === currentUser.id);
-    if (!latestUser) {
-      sessionStorage.removeItem('procurement_guide_user');
-      setCurrentUser(null);
+    if (!supabase) {
+      setIsAuthLoading(false);
       return;
     }
-    if (latestUser !== currentUser) {
-      setCurrentUser(latestUser);
-      sessionStorage.setItem('procurement_guide_user', JSON.stringify(latestUser));
-    }
-  }, [users, currentUser]);
+
+    let isCurrent = true;
+    void restoreSessionUser()
+      .then((user) => {
+        if (isCurrent) setCurrentUser(user);
+      })
+      .catch((error: unknown) => {
+        if (isCurrent) setAuthError(error instanceof Error ? error.message : 'लगइन सत्र पुनःस्थापना गर्न सकिएन।');
+      })
+      .finally(() => {
+        if (isCurrent) setIsAuthLoading(false);
+      });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') setCurrentUser(null);
+    });
+
+    return () => {
+      isCurrent = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   if (!currentUser) {
+    if (!isSupabaseConfigured) {
+      return (
+        <main className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+          <section className="max-w-xl rounded-xl border border-amber-200 bg-white p-6 shadow-sm">
+            <h1 className="text-xl font-bold text-slate-900">Supabase configuration आवश्यक छ</h1>
+            <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              Build गर्दा <code>VITE_SUPABASE_URL</code> र <code>VITE_SUPABASE_PUBLISHABLE_KEY</code> उपलब्ध गराउनुहोस्।
+              Database schema र पहिलो admin setup का लागि <code>supabase/SETUP.md</code> हेर्नुहोस्।
+            </p>
+          </section>
+        </main>
+      );
+    }
+    if (isAuthLoading) {
+      return <main role="status" className="flex min-h-screen items-center justify-center text-sm text-slate-600">लगइन जाँच हुँदैछ...</main>;
+    }
     return (
       <LoginPage
-        users={users}
-        onLogin={(user) => {
-          sessionStorage.setItem('procurement_guide_user', JSON.stringify(user));
+        errorMessage={authError}
+        onLogin={async (username, password) => {
+          setAuthError('');
+          const user = await signInWithUsername(username, password);
           setCurrentUser(user);
+        }}
+        onSignUp={async (username, email, password) => {
+          setAuthError('');
+          const user = await signUpWithEmail(username, email, password);
+          if (user) {
+            setCurrentUser(user);
+            return false;
+          }
+          return true;
         }}
       />
     );
   }
 
-  const handleUpdateUser = (updatedUser: AppUser) => {
-    setUsers((previousUsers) => previousUsers.map((user) => (
-      user.id === updatedUser.id ? updatedUser : user
-    )));
-  };
-
   return (
     <ProcurementApp
       currentUser={currentUser}
-      users={users}
-      onAddUser={(user) => setUsers((previousUsers) => [...previousUsers, user])}
-      onUpdateUser={handleUpdateUser}
-      onDeleteUser={(userId) => setUsers((previousUsers) => previousUsers.filter((user) => user.id !== userId))}
+      authError={authError}
       onLogout={() => {
-        sessionStorage.removeItem('procurement_guide_user');
-        setCurrentUser(null);
+        void signOut()
+          .then(() => {
+            setCurrentUser(null);
+            setAuthError('');
+          })
+          .catch((error: unknown) => {
+            setAuthError(error instanceof Error ? error.message : 'लगआउट गर्न सकिएन।');
+          });
       }}
     />
   );

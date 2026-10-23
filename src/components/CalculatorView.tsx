@@ -83,7 +83,7 @@ export const CalculatorView: React.FC<CalculatorViewProps> = ({ onSelectMethod }
           <span>आर्थिक सीमा तथा अख्तियारी क्याल्कुलेटर</span>
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
-          खरिद विधि, अख्तियारी तथा धरौटी गणना यन्त्र
+          खरिद विधि, अख्तियारी तथा धरौटी गणना उपकरण (Procurement Method & Threshold Calculator)
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
           सार्वजनिक खरिद ऐन र नियमावली (१६औँ संशोधनसहित) अनुसार खरिदको प्रकार र रकम प्रविष्ट गरी कुन विधि अपनाउने, कसले लागत अनुमान स्वीकृत गर्ने, कति धरौटी माग्ने र कति दिनको सूचना प्रकाशन गर्ने तुरुन्तै गणना गर्नुहोस्।
@@ -244,7 +244,7 @@ export const CalculatorView: React.FC<CalculatorViewProps> = ({ onSelectMethod }
           <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>प्रक्रियागत कानुनी मापदण्डहरू (Mandatory Parameters):</span>
+              <span>प्रक्रियागत कानूनी मापदण्डहरू (Mandatory Parameters):</span>
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">

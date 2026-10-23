@@ -7,7 +7,7 @@ import { analyzeProcurementThreshold, formatNepaliCurrency } from '../utils/proc
 interface NewProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddProject: (project: TrackedProject) => void;
+  onAddProject: (project: TrackedProject) => void | Promise<void>;
 }
 
 export const NewProjectModal: React.FC<NewProjectModalProps> = ({
@@ -22,6 +22,8 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
   const [budgetSource, setBudgetSource] = useState('नेपाल सरकार (सङ्घीय बजेट)');
   const [methodId, setMethodId] = useState('');
   const [notes, setNotes] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Analyze threshold dynamically
   const analysis = useMemo(() => {
@@ -38,12 +40,12 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim() || !officeName.trim() || !estimatedAmount) return;
 
     const newProject: TrackedProject = {
-      id: `proj-${Date.now().toString().slice(-4)}`,
+      id: crypto.randomUUID(),
       title: title.trim(),
       officeName: officeName.trim(),
       procurementType,
@@ -60,8 +62,16 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
       notes: notes.trim(),
     };
 
-    onAddProject(newProject);
-    onClose();
+    setSubmitError('');
+    setIsSubmitting(true);
+    try {
+      await onAddProject(newProject);
+      onClose();
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'आयोजना सुरक्षित गर्न सकिएन।');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -92,6 +102,11 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
 
         {/* Modal Form */}
         <form onSubmit={handleSubmit} className="p-5 space-y-4 text-xs sm:text-sm">
+          {submitError && (
+            <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+              {submitError}
+            </p>
+          )}
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
               आयोजना वा खरिद कार्यको नाम <span className="text-red-500">*</span>
@@ -174,7 +189,7 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
           <div className="p-3.5 bg-red-50/50 border border-red-200 rounded-xl space-y-2">
             <div className="flex items-center gap-1.5 text-xs font-bold text-red-900">
               <Sparkles className="w-4 h-4 text-red-600" />
-              <span>सिफारिस गरिएको खरिद विधि र कानुनी सर्तहरू:</span>
+              <span>सिफारिस गरिएको खरिद विधि र कानूनी प्रक्रियाहरू:</span>
             </div>
             
             <div className="space-y-1.5">
@@ -244,9 +259,10 @@ export const NewProjectModal: React.FC<NewProjectModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-semibold rounded-lg text-xs sm:text-sm shadow-xs transition-colors"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-red-700 hover:bg-red-800 text-white font-semibold rounded-lg text-xs sm:text-sm shadow-xs transition-colors disabled:cursor-wait disabled:opacity-60"
             >
-              खरिद योजना सुरक्षित गर्नुहोस्
+              {isSubmitting ? 'सुरक्षित हुँदैछ...' : 'खरिद योजना सुरक्षित गर्नुहोस्'}
             </button>
           </div>
         </form>

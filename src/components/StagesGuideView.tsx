@@ -33,7 +33,7 @@ export const StagesGuideView: React.FC<StagesGuideViewProps> = ({ onSelectMethod
           सार्वजनिक खरिदका ७ मुख्य प्रक्रियागत चरणहरू
         </h2>
         <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
-          सार्वजनिक निकायले कुनै पनि खरिद कार्य सम्पन्न गर्दा अपनाउनुपर्ने पूर्वतयारीदेखि सम्झौता कार्यान्वयन, म्याद थप र अन्तिम फरफारकसम्मको विस्तृत कानुनी प्रक्रिया।
+          सार्वजनिक निकायले कुनै पनि खरिद कार्य सम्पन्न गर्दा अपनाउनुपर्ने पूर्वतयारीदेखि सम्झौता कार्यान्वयन, म्याद थप र अन्तिम फरफारकसम्मको विस्तृत कानूनी प्रक्रिया।
         </p>
       </div>
 
@@ -101,7 +101,7 @@ export const StagesGuideView: React.FC<StagesGuideViewProps> = ({ onSelectMethod
           <div className="p-3.5 bg-red-50/60 rounded-xl border border-red-200/80 flex items-start gap-3">
             <Scale className="w-5 h-5 text-red-700 shrink-0 mt-0.5" />
             <div>
-              <span className="text-xs font-bold text-red-900 uppercase">कानुनी आधार (Legal Basis):</span>
+              <span className="text-xs font-bold text-red-900 uppercase">कानूनी आधार (Legal Basis):</span>
               <p className="text-xs sm:text-sm font-semibold text-red-800 mt-0.5">
                 {activeStage.legalBasis}
               </p>
@@ -146,7 +146,7 @@ export const StagesGuideView: React.FC<StagesGuideViewProps> = ({ onSelectMethod
           <div>
             <h4 className="text-sm font-bold text-amber-900 mb-2.5 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600" />
-              <span>कानुनी जोखिम तथा कडाइका साथ पालना गर्नुपर्ने विषयहरू:</span>
+              <span>कानूनी जोखिम तथा अनिवार्य पालना गर्नुपर्ने विषयहरू:</span>
             </h4>
             <div className="space-y-2">
               {activeStage.criticalComplianceNotes.map((note, idx) => (

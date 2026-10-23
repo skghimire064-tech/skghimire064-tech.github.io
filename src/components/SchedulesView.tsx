@@ -119,7 +119,7 @@ export const SchedulesView: React.FC = () => {
 
           {selectedSchedule.sampleNotes && (
             <div className="p-3.5 bg-blue-50/60 rounded-xl border border-blue-200 text-xs text-blue-900">
-              <span className="font-bold block mb-0.5">कानुनी निर्देशन:</span>
+              <span className="font-bold block mb-0.5">कानूनी प्रावधान:</span>
               <span>{selectedSchedule.sampleNotes}</span>
             </div>
           )}

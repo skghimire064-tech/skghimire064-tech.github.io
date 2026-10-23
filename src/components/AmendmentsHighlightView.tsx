@@ -121,9 +121,9 @@ export const AmendmentsHighlightView: React.FC = () => {
             <thead className="bg-slate-100/70 border-b border-slate-200 text-slate-700 font-bold uppercase text-[11px]">
               <tr>
                 <th className="p-3.5 sm:px-5">विषय</th>
-                <th className="p-3.5 sm:px-5">साविकको कानुनी व्यवस्था</th>
+                <th className="p-3.5 sm:px-5">साविकको कानूनी व्यवस्था</th>
                 <th className="p-3.5 sm:px-5 text-red-800">हालको संशोधित व्यवस्था (१६औँ संशोधन)</th>
-                <th className="p-3.5 sm:px-5">कानुनी धारा र प्रभाव</th>
+                <th className="p-3.5 sm:px-5">कानूनी दफा र प्रभाव</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

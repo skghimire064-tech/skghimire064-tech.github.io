@@ -7,9 +7,7 @@ import {
   FileCheck2, 
   ClipboardList, 
   ArrowRight,
-  Filter,
-  CheckCircle2,
-  DollarSign
+  CheckCircle2
 } from 'lucide-react';
 import { 
   PROCUREMENT_METHODS, 
@@ -20,6 +18,34 @@ import {
 } from '../data/procurementData';
 import { ACT_CHAPTERS } from '../data/completeLawData';
 import { ProcurementType } from '../types/procurement';
+
+const SEARCH_TERM_ALIASES: Record<string, string[]> = {
+  'औसत अङ्क नजिक': ['औसत', 'अङ्क'],
+  '३०% घटेको': ['३०%'],
+  '५ वटा ठेक्का सीमा': ['५', 'ठेक्का'],
+  'भेरिएसन सीमा': ['भेरिएसन'],
+  'रिटेन्सन मनी ५%': ['रिटेन्सन'],
+};
+
+const searchableText = (value: unknown): string => {
+  if (typeof value === 'string' || typeof value === 'number') {
+    return String(value).toLocaleLowerCase();
+  }
+  if (Array.isArray(value)) {
+    return value.map(searchableText).join(' ');
+  }
+  if (value && typeof value === 'object') {
+    return Object.values(value).map(searchableText).join(' ');
+  }
+  return '';
+};
+
+const matchesSearch = (value: unknown, term: string): boolean => {
+  const normalizedTerm = term.normalize('NFC').toLocaleLowerCase();
+  const text = searchableText(value).normalize('NFC');
+  const terms = SEARCH_TERM_ALIASES[normalizedTerm] ?? normalizedTerm.split(/\s+/).filter(Boolean);
+  return terms.every((part) => text.includes(part));
+};
 
 interface SearchAndFilterModalProps {
   isOpen: boolean;
@@ -55,7 +81,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
 
   // Filtering Logic
   const filteredResults = useMemo(() => {
-    const term = searchTerm.trim().toLowerCase();
+    const term = searchTerm.trim().toLocaleLowerCase();
 
     // 1. Filter Methods
     const matchedMethods = (selectedContentType === 'all' || selectedContentType === 'methods')
@@ -72,15 +98,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
 
           // Text search
           if (!term) return true;
-          return (
-            m.nameNepali.toLowerCase().includes(term) ||
-            m.nameEnglish.toLowerCase().includes(term) ||
-            m.legalActSection.toLowerCase().includes(term) ||
-            m.legalRuleSection.toLowerCase().includes(term) ||
-            m.summary.toLowerCase().includes(term) ||
-            m.keyConditions.some((k) => k.toLowerCase().includes(term)) ||
-            m.requiredDocuments.some((d) => d.toLowerCase().includes(term))
-          );
+          return matchesSearch(m, term);
         })
       : [];
 
@@ -107,12 +125,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
       ? uniqueClauses.filter((c) => {
           if (selectedType !== 'all' && c.category !== 'general' && !c.category.includes(selectedType)) return false;
           if (!term) return true;
-          return (
-            c.clauseNumber.toLowerCase().includes(term) ||
-            c.title.toLowerCase().includes(term) ||
-            c.summary.toLowerCase().includes(term) ||
-            c.tags.some((t) => t.toLowerCase().includes(term))
-          );
+          return matchesSearch(c, term);
         })
       : [];
 
@@ -122,11 +135,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
           if (selectedType !== 'all' && !chk.procurementTypes.includes(selectedType)) return false;
           if (selectedStage !== 'all' && chk.stageId !== selectedStage) return false;
           if (!term) return true;
-          return (
-            chk.text.toLowerCase().includes(term) ||
-            chk.legalRef.toLowerCase().includes(term) ||
-            (chk.notes && chk.notes.toLowerCase().includes(term))
-          );
+          return matchesSearch(chk, term);
         })
       : [];
 
@@ -135,13 +144,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
       ? PROCUREMENT_STAGES.filter((s) => {
           if (selectedStage !== 'all' && s.id !== selectedStage) return false;
           if (!term) return true;
-          return (
-            s.titleNepali.toLowerCase().includes(term) ||
-            s.titleEnglish.toLowerCase().includes(term) ||
-            s.description.toLowerCase().includes(term) ||
-            s.legalBasis.toLowerCase().includes(term) ||
-            s.keyActivities.some((k) => k.toLowerCase().includes(term))
-          );
+          return matchesSearch(s, term);
         })
       : [];
 
@@ -149,12 +152,7 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
     const matchedSchedules = (selectedContentType === 'all' || selectedContentType === 'schedules')
       ? OFFICIAL_SCHEDULES.filter((sch) => {
           if (!term) return true;
-          return (
-            sch.scheduleNumber.toLowerCase().includes(term) ||
-            sch.title.toLowerCase().includes(term) ||
-            sch.description.toLowerCase().includes(term) ||
-            sch.ruleReference.toLowerCase().includes(term)
-          );
+          return matchesSearch(sch, term);
         })
       : [];
 
@@ -320,10 +318,11 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
           <div>
             फेला परेका नतिजा: <span className="font-semibold text-slate-900 tabular-nums">{filteredResults.totalCount}</span> वटा
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
             <span>विधि: {filteredResults.methods.length}</span>
             <span>दफा: {filteredResults.clauses.length}</span>
             <span>चेकलिस्ट: {filteredResults.checklists.length}</span>
+            <span>चरण: {filteredResults.stages.length}</span>
             <span>अनुसूची: {filteredResults.schedules.length}</span>
           </div>
         </div>
@@ -462,12 +461,42 @@ export const SearchAndFilterModal: React.FC<SearchAndFilterModalProps> = ({
                 </div>
               )}
 
-              {/* Group 4: Official Schedules */}
+              {/* Group 4: Procurement Stages */}
+              {filteredResults.stages.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2.5">
+                    <ClipboardList className="w-4 h-4 text-indigo-700" />
+                    <span>प्रक्रियागत चरणहरू ({filteredResults.stages.length})</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {filteredResults.stages.map((stage) => (
+                      <div
+                        key={stage.id}
+                        onClick={() => {
+                          onSelectResult('stage', stage.id);
+                          onClose();
+                        }}
+                        className="p-3 rounded-lg border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/30 transition-all cursor-pointer group text-left"
+                      >
+                        <h4 className="text-sm font-semibold text-slate-900 group-hover:text-indigo-700 transition-colors">
+                          {stage.stageNo}. {stage.titleNepali}
+                        </h4>
+                        <p className="text-xs text-slate-600 mt-1 line-clamp-2">{stage.description}</p>
+                        <div className="text-[11px] text-slate-600 mt-2 pt-2 border-t border-slate-100">
+                          कानुनी आधार: {stage.legalBasis}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Group 5: Official Schedules */}
               {filteredResults.schedules.length > 0 && (
                 <div>
                   <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2.5">
                     <ClipboardList className="w-4 h-4 text-blue-700" />
-                    <span>कानुनी अनुसूची तथा ढाँचाहरू ({filteredResults.schedules.length})</span>
+                    <span>अनुसूची तथा कानूनी ढाँचाहरू ({filteredResults.schedules.length})</span>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     {filteredResults.schedules.map((sch) => (

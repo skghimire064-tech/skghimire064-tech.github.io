@@ -274,7 +274,7 @@ export const MethodChecklistsView: React.FC<MethodChecklistsViewProps> = ({
                         {doc}
                       </span>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        खरिद कानुन अनुसार यो कागजात खरिद सम्झौता फाइलमा सुरक्षित हुनुपर्नेछ (नियम १४९)।
+                        खरिद कानून अनुसार यो कागजात खरिद सम्झौता फाइलमा सुरक्षित हुनुपर्नेछ (नियम १४९)।
                       </p>
                     </div>
                   </label>

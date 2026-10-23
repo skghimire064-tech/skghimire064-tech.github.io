@@ -74,7 +74,7 @@ export const ProcurementMethodsView: React.FC<ProcurementMethodsViewProps> = ({
             <span>सार्वजनिक खरिद ऐन दफा ८ र नियमावली</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
-            खरिदका सम्पूर्ण कानुनी विधिहरू तथा प्रक्रियागत विवरण
+            खरिदका सम्पूर्ण कानूनी विधिहरू तथा प्रक्रियागत विवरण
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
             सार्वजनिक निकायले निर्माण, मालसामान वा सेवा खरिद गर्दा मूल्य, जटिलता र आवश्यकताका आधारमा अवलम्बन गर्नुपर्ने आधिकारिक खरिद विधिहरूको विस्तृत विवरण, सीमा, चरणहरू र कागजातहरू।
@@ -271,11 +271,11 @@ export const ProcurementMethodsView: React.FC<ProcurementMethodsViewProps> = ({
                 </div>
               </div>
 
-              {/* Key Conditions (मुख्य कानुनी सर्तहरू) */}
+              {/* Key Conditions (मुख्य कानूनी सर्तहरू) */}
               <div>
                 <h4 className="text-sm font-bold text-slate-900 mb-2.5 flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-red-600" />
-                  <span>मुख्य कानुनी सर्त तथा व्यवस्थाहरू:</span>
+                  <span>प्रमुख कानूनी व्यवस्थाहरू:</span>
                 </h4>
                 <div className="space-y-2">
                   {activeMethodModal.keyConditions.map((cond, idx) => (
@@ -336,7 +336,7 @@ export const ProcurementMethodsView: React.FC<ProcurementMethodsViewProps> = ({
                 <div className="p-3.5 bg-amber-50 rounded-xl border border-amber-200 text-amber-900">
                   <h4 className="text-xs font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
                     <AlertTriangle className="w-4 h-4 text-amber-600" />
-                    <span>विशेष ध्यान दिनुपर्ने कानुनी बन्देजहरू (Cautions):</span>
+                    <span>विशेष ध्यान दिनुपर्ने कानूनी बन्देजहरू (Cautions):</span>
                   </h4>
                   <ul className="list-disc pl-5 space-y-1 text-xs">
                     {activeMethodModal.cautions.map((c, idx) => (

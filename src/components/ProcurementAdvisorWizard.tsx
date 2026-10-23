@@ -125,10 +125,10 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
             <span>सजिलो खरिद सल्लाहकार (Procurement Decision Assistant)</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
-            "मलाई के खरिद गर्नु छ?" - ३ चरणमा उपयुक्त कानुनी मार्गनिर्देशन
+            "मलाई के खरिद गर्नु छ?" - ३ चरणमा उपयुक्त कानूनी मार्गदर्शन
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
-            तपाईंले गर्न लाग्नुभएको कामको प्रकार, बजेट र अवस्था प्रविष्ट गर्नासाथ कानुन सम्मत खरिद विधि, स्वीकृति गर्ने अधिकारी, सूचना म्याद, धरौटी र आवश्यक कागजातको तुरुन्तै मार्गदर्शन पाउनुहोस्।
+            कामको प्रकार, बजेट र अवस्था प्रविष्ट गरी कानून सम्मत खरिद विधि, स्वीकृति गर्ने अधिकारी, सूचना म्याद, धरौटी र आवश्यक कागजातको मार्गदर्शन हेर्नुहोस्।
           </p>
         </div>
 
@@ -162,7 +162,7 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
               चरण १: तपाईं कुन प्रकृतिको खरिद गर्दै हुनुहुन्छ?
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
-              खरिद ऐन अनुसार प्रत्येक प्रकृतिको लागि फरक कानुनी कार्यविधि र सीमा तोकिएको छ।
+              खरिद ऐन अनुसार प्रत्येक प्रकृतिको लागि फरक कानूनी कार्यविधि र सीमा तोकिएको छ।
             </p>
           </div>
 
@@ -197,7 +197,7 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
                 </span>
               </div>
               <p className="text-xs text-slate-600 leading-relaxed">
-                चल वा अचल, सजीव वा निर्जीव वस्तुहरू—जस्तै कार्यालय मसलन्द, फर्निचर, गाडी, स्वास्थ्य यन्त्र, पाइप, औषधि आदि।
+                चल वा अचल, सजीव वा निर्जीव वस्तुहरू—जस्तै कार्यालय मसलन्द, फर्निचर, गाडी, स्वास्थ्य उपकरण, पाइप, औषधि आदि।
               </p>
             </button>
 
@@ -316,7 +316,7 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
                 />
                 <div>
                   <span className="font-bold text-slate-900 block">सामान्य नियमित खरिद (Normal)</span>
-                  <span className="text-[11px] text-slate-500">कानुन बमोजिमको खुला वा नियमित विधि</span>
+                  <span className="text-[11px] text-slate-500">कानून बमोजिमको खुला वा नियमित विधि</span>
                 </div>
               </label>
 
@@ -458,7 +458,7 @@ export const ProcurementAdvisorWizard: React.FC<ProcurementAdvisorWizardProps> =
           <div className="mx-6 p-4 bg-amber-50 rounded-xl border border-amber-200 text-amber-900 text-xs sm:text-sm flex items-start gap-2.5">
             <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
-              <span className="font-bold block mb-0.5">सावधानी तथा अनिवार्य कानुनी बन्देज:</span>
+              <span className="font-bold block mb-0.5">सावधानी तथा अनिवार्य शर्तहरू:</span>
               <p>{finalRecommendation.caution}</p>
             </div>
           </div>

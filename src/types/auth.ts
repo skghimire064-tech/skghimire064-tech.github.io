@@ -3,10 +3,12 @@ export type UserRole = 'admin' | 'user';
 export interface AppUser {
   id: string;
   username: string;
-  password: string;
   role: UserRole;
+  createdAt?: string;
 }
 
-export const DEFAULT_USERS: AppUser[] = [
-  { id: 'default-admin', username: 'admin', password: 'admin123', role: 'admin' },
-];
+export interface ManagedUserInput {
+  username: string;
+  password?: string;
+  role: UserRole;
+}

@@ -69,7 +69,7 @@ export const Header: React.FC<HeaderProps> = ({
                   सार्वजनिक खरिद सहयोगी
                 </span>
                 <span className="text-[11px] font-medium text-slate-700 hidden sm:block">
-                  ऐन २०६३ र नियमावली २०६४ (१६औँ संशोधनसहित पूर्ण जानकारी)
+                  ऐन २०६३ र नियमावली २०६४ (१६औँ संशोधन सहितको जानकारी)
                 </span>
               </div>
             </button>

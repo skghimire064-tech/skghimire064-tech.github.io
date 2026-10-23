@@ -113,7 +113,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             खरिद प्रक्रिया गाइड ड्यासबोर्ड
           </h1>
           <p className="mt-2 text-slate-300 text-sm sm:text-base leading-relaxed">
-            सार्वजनिक खरिद ऐन, २०६३ र सार्वजनिक खरिद नियमावली, २०६४ (१६औँ संशोधन) बमोजिम निर्माण, मालसामान वा सेवा खरिद गर्दा अपनाउनुपर्ने कानुनी प्रक्रिया, अख्तियारी, आवश्यक कागजात र चेकलिस्ट।
+            सार्वजनिक खरिद ऐन, २०६३ र सार्वजनिक खरिद नियमावली, २०६४ (१६औँ संशोधन) बमोजिम निर्माण, मालसामान वा सेवा खरिद गर्दा अपनाउनुपर्ने कानूनी प्रक्रिया, अख्तियारी, आवश्यक कागजात र चेकलिस्ट।
           </p>
 
           <div className="mt-5 flex items-center gap-3 flex-wrap">
@@ -138,7 +138,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             aria-hidden="true"
             className="h-full w-full object-cover object-right"
           />
-          <div className="absolute inset-0 bg-[#1e4f91]/10 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#2563eb]/35 via-[#1e4f91]/50 to-[#173b63]/65" />
           <div className="absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-[#1e4f91] via-[#1e4f91]/40 to-transparent" />
         </div>
       </div>
@@ -224,7 +224,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               खरिद आयोजनाहरूको सूची तथा चरणबद्ध स्थिति
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
-              प्रत्येक आयोजनामा क्लिक गरी विस्तृत प्रक्रियागत चरण र अनिवार्य कानुनी चेकलिस्ट हेर्नुहोस् र सम्पादन गर्नुहोस्।
+              प्रत्येक आयोजनामा क्लिक गरी विस्तृत प्रक्रियागत चरण र अनिवार्य कानूनी चेकलिस्ट हेर्नुहोस् र सम्पादन गर्नुहोस्।
             </p>
           </div>
 
@@ -444,7 +444,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       : 'border-transparent text-slate-500 hover:text-slate-800'
                   }`}
                 >
-                  कानुनी सर्त तथा अख्तियारी
+                  कानूनी सर्त तथा अख्तियारी
                 </button>
               </div>
 
@@ -514,7 +514,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                                 </h4>
                                 <p className="text-xs text-slate-600 mt-1">{stg.description}</p>
                                 <div className="text-[11px] text-slate-600 font-mono mt-1">
-                                  कानुनी आधार: {stg.legalBasis}
+                                  कानूनी आधार: {stg.legalBasis}
                                 </div>
                               </div>
                             </div>
@@ -551,7 +551,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between text-xs text-slate-600 pb-2 border-b border-slate-100">
                     <span>
-                      यस आयोजनाका लागि लागू हुने अनिवार्य कानुनी मापदण्डहरू टिक लगाउनुहोस्।
+                      यस आयोजनाका लागि लागू हुने अनिवार्य कानूनी मापदण्डहरू टिक लगाउनुहोस्।
                     </span>
                     <span className="font-semibold text-slate-900">
                       प्रगति: {selectedProject.progressPercent}%
@@ -617,7 +617,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <div className="space-y-4">
                         <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
                           <h4 className="text-sm font-bold text-slate-900 mb-2">
-                            कानुनी अख्तियारी तथा सीमा विवरण
+                            कानूनी अख्तियारी तथा सीमा विवरण
                           </h4>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                             <div className="p-2.5 bg-white rounded-lg border border-slate-200">
@@ -644,7 +644,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         </div>
 
                         <div className="p-4 bg-white rounded-xl border border-slate-200 space-y-2 text-xs text-slate-700">
-                          <h4 className="font-bold text-slate-900 text-sm">यस आयोजनाका मुख्य कानुनी सर्तहरू:</h4>
+                          <h4 className="font-bold text-slate-900 text-sm">यस आयोजनाका मुख्य कानूनी सर्तहरू:</h4>
                           <div className="flex items-center gap-2">
                             <span className="font-semibold">बोलपत्र मान्य अवधि:</span>
                             <span className="font-mono">{analysis.bidValidityDays} दिन (जमानत अवधि {analysis.bidSecurityValidityDays} दिन)</span>

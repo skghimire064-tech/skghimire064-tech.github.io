@@ -1,34 +1,59 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, LockKeyhole, LogIn } from 'lucide-react';
 import loginBackground from '../../loginImage.jpeg';
-import { AppUser } from '../types/auth';
 
 interface LoginPageProps {
-  users: AppUser[];
-  onLogin: (user: AppUser) => void;
+  errorMessage?: string;
+  onLogin: (username: string, password: string) => Promise<void>;
+  onSignUp: (username: string, email: string, password: string) => Promise<boolean>;
 }
 
-export const LoginPage: React.FC<LoginPageProps> = ({ users, onLogin }) => {
+export const LoginPage: React.FC<LoginPageProps> = ({ errorMessage, onLogin, onSignUp }) => {
+  const [isSignUp, setIsSignUp] = useState(false);
   const [username, setUsername] = useState('admin');
   const [password, setPassword] = useState('');
+  const [signUpUsername, setSignUpUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    const user = users.find(
-      (account) => account.username.toLocaleLowerCase() === username.trim().toLocaleLowerCase()
-        && account.password === password,
-    );
-
-    if (!user) {
-      setError('प्रयोगकर्ता नाम वा पासवर्ड मिलेन।');
-      return;
-    }
-
     setError('');
-    onLogin(user);
+    setIsSubmitting(true);
+    try {
+      await onLogin(username, password);
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : 'लगइन असफल भयो। पुनः प्रयास गर्नुहोस्।');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError('');
+    setNotice('');
+    setIsSubmitting(true);
+    try {
+      const confirmationRequired = await onSignUp(signUpUsername, email, signUpPassword);
+      if (confirmationRequired) {
+        setNotice('तपाईंको इमेलमा verification link पठाइएको छ। इमेल verify गरेपछि आफ्नो इमेल र पासवर्डबाट लगइन गर्नुहोस्।');
+      }
+    } catch (signUpError) {
+      setError(signUpError instanceof Error ? signUpError.message : 'खाता बनाउन सकिएन। पुनः प्रयास गर्नुहोस्।');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const switchMode = (signUp: boolean) => {
+    setIsSignUp(signUp);
+    setError('');
+    setNotice('');
   };
 
   return (
@@ -46,7 +71,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLogin }) => {
           <div>
             <div className="text-xl font-bold tracking-tight sm:text-2xl">सार्वजनिक खरिद सहयोगी</div>
             <div className="mt-0.5 text-xs text-blue-100/90 sm:text-sm">
-              खरिद प्रक्रिया तथा अनुपालन प्रणाली
+              खरिद प्रक्रिया गाइड
             </div>
           </div>
         </div>
@@ -56,78 +81,175 @@ export const LoginPage: React.FC<LoginPageProps> = ({ users, onLogin }) => {
             <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
               <LockKeyhole className="h-5 w-5" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900">लगइन गर्नुहोस्</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              {isSignUp ? 'नयाँ खाता बनाउनुहोस्' : 'लगइन गर्नुहोस्'}
+            </h1>
             <p className="mt-1.5 text-sm text-slate-600">
-              प्रणाली प्रयोग गर्न आफ्नो लगइन विवरण प्रविष्ट गर्नुहोस्।
+              {isSignUp
+                ? 'इमेल verify गरेपछि आफ्नो खातामा लगइन गर्न सक्नुहुन्छ।'
+                : 'प्रणाली प्रयोग गर्न आफ्नो लगइन विवरण प्रविष्ट गर्नुहोस्।'}
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="login-username" className="mb-1.5 block text-sm font-medium text-slate-700">
-                प्रयोगकर्ता नाम
-              </label>
-              <input
-                id="login-username"
-                name="username"
-                type="text"
-                autoComplete="username"
-                value={username}
-                onChange={(event) => {
-                  setUsername(event.target.value);
-                  setError('');
-                }}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="login-password" className="mb-1.5 block text-sm font-medium text-slate-700">
-                पासवर्ड
-              </label>
-              <div className="relative">
+          {isSignUp ? (
+            <form onSubmit={handleSignUp} className="space-y-4">
+              <div>
+                <label htmlFor="signup-username" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  प्रयोगकर्ता नाम
+                </label>
                 <input
-                  id="login-password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  value={password}
+                  id="signup-username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  minLength={3}
+                  maxLength={32}
+                  pattern="[a-zA-Z0-9._-]+"
+                  title="३ देखि ३२ अक्षर: अंग्रेजी अक्षर, अंक, डट, ड्यास वा अन्डरस्कोर"
+                  value={signUpUsername}
                   onChange={(event) => {
-                    setPassword(event.target.value);
+                    setSignUpUsername(event.target.value);
                     setError('');
                   }}
-                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-11 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
                   required
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword((visible) => !visible)}
-                  className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 hover:text-slate-700"
-                  aria-label={showPassword ? 'पासवर्ड लुकाउनुहोस्' : 'पासवर्ड देखाउनुहोस्'}
-                >
-                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                </button>
               </div>
-            </div>
 
-            {error && (
-              <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-                {error}
-              </p>
-            )}
+              <div>
+                <label htmlFor="signup-email" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  इमेल ठेगाना
+                </label>
+                <input
+                  id="signup-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    setError('');
+                  }}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  required
+                />
+              </div>
 
+              <div>
+                <label htmlFor="signup-password" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  पासवर्ड (कम्तीमा ८ अक्षर)
+                </label>
+                <input
+                  id="signup-password"
+                  name="new-password"
+                  type="password"
+                  autoComplete="new-password"
+                  minLength={8}
+                  value={signUpPassword}
+                  onChange={(event) => {
+                    setSignUpPassword(event.target.value);
+                    setError('');
+                  }}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  required
+                />
+              </div>
+
+              {error && <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p>}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 disabled:cursor-wait disabled:opacity-70"
+              >
+                {isSubmitting ? 'खाता बनाउँदैछ...' : 'खाता बनाउनुहोस्'}
+              </button>
+            </form>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div>
+                <label htmlFor="login-username" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  प्रयोगकर्ता नाम वा इमेल
+                </label>
+                <input
+                  id="login-username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
+                  value={username}
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                    setError('');
+                  }}
+                  className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="login-password" className="mb-1.5 block text-sm font-medium text-slate-700">
+                  पासवर्ड
+                </label>
+                <div className="relative">
+                  <input
+                    id="login-password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    autoComplete="current-password"
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+                      setError('');
+                    }}
+                    className="w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 pr-11 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((visible) => !visible)}
+                    className="absolute inset-y-0 right-0 flex items-center px-3 text-slate-500 hover:text-slate-700"
+                    aria-label={showPassword ? 'पासवर्ड लुकाउनुहोस्' : 'पासवर्ड देखाउनुहोस्'}
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              </div>
+
+              {error && (
+                <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {error}
+                </p>
+              )}
+              {!error && errorMessage && (
+                <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+                  {errorMessage}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
+              >
+                <LogIn className="h-4 w-4" />
+                {isSubmitting ? 'लगइन हुँदैछ...' : 'लगइन'}
+              </button>
+            </form>
+          )}
+
+          {notice && (
+            <p role="status" className="mt-4 rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">{notice}</p>
+          )}
+
+          <p className="mt-5 text-center text-sm text-slate-600">
+            {isSignUp ? 'पहिले नै खाता छ?' : 'नयाँ user हो?'}{' '}
             <button
-              type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2"
+              type="button"
+              onClick={() => switchMode(!isSignUp)}
+              className="font-semibold text-blue-700 hover:text-blue-800"
             >
-              <LogIn className="h-4 w-4" />
-              लगइन
+              {isSignUp ? 'लगइन गर्नुहोस्' : 'खाता बनाउनुहोस्'}
             </button>
-          </form>
-
-          <p className="mt-5 text-center text-xs text-slate-500">
-            पूर्वनिर्धारित admin लगइन: <span className="font-semibold text-slate-700">admin / admin123</span>
           </p>
         </section>
       </div>

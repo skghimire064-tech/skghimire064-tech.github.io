@@ -34,13 +34,13 @@ export const LegalClausesView: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-amber-700 uppercase tracking-wide">
             <BookOpen className="w-4 h-4" />
-            <span>कानुनी व्यवस्था तथा दफाहरू (Legal Clauses Index)</span>
+            <span>कानूनी व्यवस्था तथा दफाहरू (Legal Clauses Index)</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
             सार्वजनिक खरिद ऐन, २०६३ र नियमावली, २०६४ का प्रमुख दफाहरू
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
-            १६औँ संशोधनसहितका प्रमुख दफाहरू तथा नियमहरूको सार, व्याख्या र सान्दर्भिक विषयवस्तुहरूको कानुनी निर्देशिका।
+            १६औँ संशोधनसहितका प्रमुख दफाहरू तथा नियमहरूको सार, व्याख्या र सान्दर्भिक विषयवस्तुहरूको कानूनी निर्देशिका।
           </p>
         </div>
 
@@ -160,7 +160,7 @@ export const LegalClausesView: React.FC = () => {
               </div>
 
               <span className="text-[11px] text-amber-700 font-medium font-mono">
-                अख्तियारी / बाध्यकारी
+                अनिवार्य / बाध्यकारी
               </span>
             </div>
           </div>

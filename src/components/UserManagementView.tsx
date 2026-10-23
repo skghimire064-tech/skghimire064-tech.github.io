@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Pencil, Plus, Shield, Trash2, UserRound, X } from 'lucide-react';
-import { AppUser, UserRole } from '../types/auth';
+import { AppUser, ManagedUserInput, UserRole } from '../types/auth';
 
 interface UserManagementViewProps {
   users: AppUser[];
   currentUser: AppUser;
-  onAddUser: (user: AppUser) => void;
-  onUpdateUser: (user: AppUser) => void;
-  onDeleteUser: (userId: string) => void;
+  error: string;
+  onAddUser: (input: ManagedUserInput) => Promise<AppUser>;
+  onUpdateUser: (id: string, input: ManagedUserInput) => Promise<AppUser>;
+  onDeleteUser: (userId: string) => Promise<void>;
 }
 
 interface UserFormState {
@@ -21,6 +22,7 @@ const EMPTY_FORM: UserFormState = { username: '', password: '', role: 'user' };
 export const UserManagementView: React.FC<UserManagementViewProps> = ({
   users,
   currentUser,
+  error: loadError,
   onAddUser,
   onUpdateUser,
   onDeleteUser,
@@ -29,6 +31,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
   const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState<UserFormState>(EMPTY_FORM);
   const [error, setError] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
   const startAdd = () => {
     setEditingUserId(null);
@@ -51,7 +54,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
     setError('');
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const username = form.username.trim();
     const duplicate = users.some(
@@ -68,8 +71,8 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       return;
     }
 
-    if (form.password && form.password.length < 6) {
-      setError('पासवर्ड कम्तीमा ६ अक्षरको हुनुपर्छ।');
+    if (form.password && form.password.length < 8) {
+      setError('पासवर्ड कम्तीमा ८ अक्षरको हुनुपर्छ।');
       return;
     }
 
@@ -80,26 +83,25 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
       return;
     }
 
-    if (existingUser) {
-      onUpdateUser({
-        ...existingUser,
-        username,
-        password: form.password || existingUser.password,
-        role: form.role,
-      });
-    } else {
-      onAddUser({
-        id: crypto.randomUUID(),
-        username,
-        password: form.password,
-        role: form.role,
-      });
+    setIsSaving(true);
+    setError('');
+    try {
+      const input: ManagedUserInput = { username, role: form.role };
+      if (form.password) input.password = form.password;
+      if (existingUser) {
+        await onUpdateUser(existingUser.id, input);
+      } else {
+        await onAddUser(input);
+      }
+      closeForm();
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : 'परिवर्तन सुरक्षित गर्न सकिएन।');
+    } finally {
+      setIsSaving(false);
     }
-
-    closeForm();
   };
 
-  const handleDelete = (user: AppUser) => {
+  const handleDelete = async (user: AppUser) => {
     if (user.id === currentUser.id) {
       setError('हाल लगइन भएको खातालाई मेटाउन मिल्दैन।');
       return;
@@ -112,7 +114,11 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
 
     if (window.confirm(`"${user.username}" प्रयोगकर्तालाई मेटाउने हो?`)) {
       setError('');
-      onDeleteUser(user.id);
+      try {
+        await onDeleteUser(user.id);
+      } catch (deleteError) {
+        setError(deleteError instanceof Error ? deleteError.message : 'प्रयोगकर्ता मेटाउन सकिएन।');
+      }
     }
   };
 
@@ -133,6 +139,10 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </button>
       </div>
 
+      {loadError && (
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</p>
+      )}
+
       {error && !editingUserId && (
         <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
       )}
@@ -148,7 +158,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
           <UserFormFields form={form} setForm={setForm} error={error} editing={false} />
           <div className="mt-4 flex justify-end gap-2">
             <button type="button" onClick={closeForm} className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">रद्द गर्नुहोस्</button>
-            <button type="submit" className="rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-800">खाता थप्नुहोस्</button>
+            <button type="submit" disabled={isSaving} className="rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60">{isSaving ? 'सुरक्षित हुँदैछ...' : 'खाता थप्नुहोस्'}</button>
           </div>
         </form>
       )}
@@ -171,7 +181,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
                   <UserFormFields form={form} setForm={setForm} error={error} editing />
                   <div className="mt-4 flex justify-end gap-2">
                     <button type="button" onClick={closeForm} className="rounded-lg border border-slate-300 px-3.5 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">रद्द गर्नुहोस्</button>
-                    <button type="submit" className="rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-800">परिवर्तन सुरक्षित गर्नुहोस्</button>
+                    <button type="submit" disabled={isSaving} className="rounded-lg bg-blue-700 px-3.5 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60">{isSaving ? 'सुरक्षित हुँदैछ...' : 'परिवर्तन सुरक्षित गर्नुहोस्'}</button>
                   </div>
                 </form>
               ) : (
@@ -205,7 +215,7 @@ export const UserManagementView: React.FC<UserManagementViewProps> = ({
         </div>
       </section>
       <p className="text-xs leading-relaxed text-slate-500">
-        सूचना: यो संस्करणमा प्रयोगकर्ता विवरण यस browser को local storage मा राखिन्छ। वास्तविक बहु-प्रयोगकर्ता सुरक्षा र पासवर्ड गोपनीयताका लागि server-side authentication आवश्यक हुन्छ।
+        प्रयोगकर्ता विवरण र password Supabase Auth बाट सुरक्षित रूपमा व्यवस्थापन हुन्छ।
       </p>
     </div>
   );
@@ -240,7 +250,7 @@ const UserFormFields: React.FC<UserFormFieldsProps> = ({ form, setForm, error, e
           className="mt-1.5 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-normal text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           autoComplete="new-password"
           required={!editing}
-          minLength={6}
+          minLength={8}
           placeholder={editing ? 'परिवर्तन नगर्न खाली छोड्नुहोस्' : ''}
         />
       </label>

@@ -37,11 +37,11 @@ export const TemplatesView: React.FC<TemplatesViewProps> = ({
   const [copied, setCopied] = useState(false);
 
   // Customization fields for the active template
-  const [customOffice, setCustomOffice] = useState('शहरी विकास तथा भवन निर्माण डिभिजन कार्यालय');
-  const [customProject, setCustomProject] = useState('स्वास्थ्य चौकी भवन तथा कम्पाउण्ड वाल निर्माण');
+  const [customOffice, setCustomOffice] = useState('राष्ट्रिय सतर्कता केन्द्र');
+  const [customProject, setCustomProject] = useState('कम्प्युटर पार्टस् खरिद तथा मर्मतसम्भार');
   const [customAmount, setCustomAmount] = useState('४५,००,०००/-');
   const [customDate, setCustomDate] = useState('२०८१/०७/१५');
-  const [customContractNo, setCustomContractNo] = useState('UDBC/NCB/WORKS/02-081/82');
+  const [customContractNo, setCustomContractNo] = useState('UDBC/NCB/WORKS/02-083/84');
 
   const filteredTemplates = PROCUREMENT_TEMPLATES.filter((t) => {
     if (selectedCategory !== 'all' && t.category !== selectedCategory) return false;
@@ -120,10 +120,10 @@ export const TemplatesView: React.FC<TemplatesViewProps> = ({
         <div>
           <div className="flex items-center gap-2 text-xs font-semibold text-red-700 uppercase tracking-wide">
             <FileText className="w-4 h-4" />
-            <span>कानुनी कागजात तथा फारामहरूको भण्डार</span>
+            <span>कानूनी कागजात तथा फारामहरूको संग्रह</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mt-1">
-            सार्वजनिक खरिद आधिकारिक कागजात ढाँचा (Templates Repository)
+            सार्वजनिक खरिद सम्बन्धी कागजात ढाँचा (Templates Repository)
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-3xl leading-relaxed">
             बोलपत्र आह्वानको सूचना, दरभाउपत्र फाराम, खोल्ने मुचुल्का, आशयको सूचना (LOI), स्वीकृति पत्र (LOA), खरिद सम्झौता, बैंक जमानत र कार्य सम्पन्न प्रमाणपत्रका आधिकारिक कानूनी ढाँचाहरू डाउनलोड वा प्रिन्ट गर्नुहोस्।
@@ -294,7 +294,7 @@ export const TemplatesView: React.FC<TemplatesViewProps> = ({
                   {activeTemplate.titleNepali}
                 </h3>
                 <span className="text-xs text-slate-500 font-mono">
-                  कानुनी आधार: {activeTemplate.legalReference}
+                  कानूनी आधार: {activeTemplate.legalReference}
                 </span>
               </div>
 

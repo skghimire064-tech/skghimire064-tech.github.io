@@ -70,8 +70,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({ errorMessage, onLogin, onS
           </div>
           <div>
             <div className="text-xl font-bold tracking-tight sm:text-2xl">सार्वजनिक खरिद सहयोगी</div>
-            <div className="mt-0.5 text-xs text-blue-100/90 sm:text-sm">
-              खरिद प्रक्रिया गाइड
+            <div className="mt-1.5 max-w-sm text-sm leading-6 text-blue-50/90">
+              खरिद योजना, खरिद व्यवस्थापन, कानुनी सन्दर्भ र उपयोगी सामग्रीहरू एउटै स्थलमा।
             </div>
           </div>
         </div>

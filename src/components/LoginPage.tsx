@@ -75,7 +75,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ errorMessage, onLogin, onS
           </div>
           <p className="text-sm font-semibold uppercase tracking-[.18em] text-blue-200">सजिलो · पारदर्शी · व्यवस्थित</p>
           <h2 className="mt-4 text-4xl font-bold leading-tight tracking-tight xl:text-5xl">सार्वजनिक खरिदका हरेक चरणमा<br />विश्वसनीय साथ।</h2>
-          <p className="mt-5 max-w-lg text-base leading-7 text-blue-50/85">योजना व्यवस्थापन, कानुनी सन्दर्भ र उपयोगी उपकरणहरू एउटै सुरक्षित कार्यस्थलमा।</p>
+          <p className="mt-5 max-w-lg text-base leading-7 text-blue-50/85">खरिद योजना, खरिद व्यवस्थापन, कानुनी सन्दर्भ र उपयोगी सामग्रीहरू एउटै स्थलमा।</p>
         </div>
 
         <section className="w-full rounded-3xl border border-white/70 bg-white/95 p-6 shadow-2xl shadow-slate-950/20 backdrop-blur-md sm:p-9">

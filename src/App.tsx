@@ -7,6 +7,7 @@ import React, { lazy, Suspense, useState, useEffect } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { TopHeader } from './components/TopHeader';
 import { DashboardView } from './components/DashboardView';
+import { FloatingProcurementChatLauncher } from './components/FloatingProcurementChatLauncher';
 import { ProcurementAdvisorWizard } from './components/ProcurementAdvisorWizard';
 import { ProcurementMethodsView } from './components/ProcurementMethodsView';
 import { MethodChecklistsView } from './components/MethodChecklistsView';
@@ -319,6 +320,7 @@ function ProcurementApp({
         userMode={userMode}
         onToggleUserMode={handleToggleUserMode}
       />
+      <FloatingProcurementChatLauncher onOpen={() => setActiveTab('procurement-chat')} />
 
       {/* Main Content Area (offset by Sidebar width on desktop) */}
       <div className={`${isSidebarCollapsed ? 'lg:pl-20' : 'lg:pl-72'} flex flex-col min-h-screen transition-all duration-200 ease-in-out`}>

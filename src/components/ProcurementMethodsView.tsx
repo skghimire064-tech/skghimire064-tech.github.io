@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { PROCUREMENT_METHODS } from '../data/procurementData';
 import { ProcurementMethod, ProcurementType } from '../types/procurement';
+import { GuideSourceNotice } from './GuideSourceNotice';
 
 interface ProcurementMethodsViewProps {
   initialSelectedMethodId?: string | null;
@@ -252,6 +253,7 @@ export const ProcurementMethodsView: React.FC<ProcurementMethodsViewProps> = ({
 
             {/* Modal Body */}
             <div className="p-5 sm:p-6 overflow-y-auto flex-1 space-y-6 text-xs sm:text-sm">
+              <GuideSourceNotice />
               {/* Summary & Threshold Metrics */}
               <div className="bg-red-50/40 p-4 rounded-xl border border-red-100">
                 <p className="text-slate-800 leading-relaxed font-medium">

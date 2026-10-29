@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowUpRight, Bot, BookOpen, FileText, RotateCcw, Search, Send, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Bot, BookOpen, FileText, Mic, MicOff, RotateCcw, Search, Send, Sparkles, Volume2, VolumeX } from 'lucide-react';
 import {
   PROCUREMENT_OFFICIAL_LINKS,
   ProcurementEvidence,
@@ -17,6 +17,43 @@ interface ChatMessage {
   text: string;
   sources?: ProcurementEvidence[];
 }
+
+interface SpeechRecognitionAlternativeLike {
+  transcript: string;
+}
+
+interface SpeechRecognitionResultLike {
+  isFinal: boolean;
+  [index: number]: SpeechRecognitionAlternativeLike;
+}
+
+interface SpeechRecognitionEventLike {
+  resultIndex: number;
+  results: ArrayLike<SpeechRecognitionResultLike>;
+}
+
+interface SpeechRecognitionErrorLike {
+  error: string;
+}
+
+interface SpeechRecognitionLike {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorLike) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+  abort: () => void;
+}
+
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+type SpeechRecognitionWindow = Window & {
+  SpeechRecognition?: SpeechRecognitionConstructor;
+  webkitSpeechRecognition?: SpeechRecognitionConstructor;
+};
 
 const suggestedQuestions = [
   'भेरिएसन आदेशमा के प्रक्रिया र सीमा उल्लेख छन्?',
@@ -91,14 +128,116 @@ export default function ProcurementChatbot({ onNavigate }: ProcurementChatbotPro
   const [question, setQuestion] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
+  const [isListening, setIsListening] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const voiceTranscriptRef = useRef('');
+  const lastSpokenMessageIdRef = useRef<string | null>(null);
+
+  const speakText = (text: string) => {
+    if (!('speechSynthesis' in window)) {
+      setError('यो ब्राउजरमा जवाफ बोल्ने सुविधा उपलब्ध छैन।');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(
+      text
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/[*#_`]/g, '')
+        .replace(/\n+/g, '. ')
+        .trim(),
+    );
+    utterance.lang = 'ne-NP';
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setError('जवाफ बोल्न सकिएन। लिखित जवाफ भने उपलब्ध छ।');
+    };
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, [messages, isSearching]);
 
+  useEffect(() => {
+    const latestMessage = messages[messages.length - 1];
+    if (latestMessage?.role !== 'assistant' || latestMessage.id === lastSpokenMessageIdRef.current) return;
+    lastSpokenMessageIdRef.current = latestMessage.id;
+    speakText(latestMessage.text);
+  }, [messages]);
+
+  useEffect(() => () => {
+    recognitionRef.current?.abort();
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  }, []);
+
+  const startVoiceInput = () => {
+    if (isListening) {
+      recognitionRef.current?.stop();
+      return;
+    }
+    const SpeechRecognition = (window as SpeechRecognitionWindow).SpeechRecognition
+      || (window as SpeechRecognitionWindow).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setError('यो ब्राउजरमा आवाजबाट प्रश्न लिने सुविधा उपलब्ध छैन। कृपया Chrome वा Edge प्रयोग गर्नुहोस् अथवा प्रश्न टाइप गर्नुहोस्।');
+      return;
+    }
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsSpeaking(false);
+    setError('');
+    voiceTranscriptRef.current = '';
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ne-NP';
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event) => {
+      let interimTranscript = '';
+      for (let index = event.resultIndex; index < event.results.length; index += 1) {
+        const result = event.results[index];
+        if (result.isFinal) voiceTranscriptRef.current += result[0].transcript;
+        else interimTranscript += result[0].transcript;
+      }
+      setQuestion(`${voiceTranscriptRef.current} ${interimTranscript}`.trim());
+    };
+    recognition.onerror = (event) => {
+      const message = event.error === 'not-allowed' || event.error === 'service-not-allowed'
+        ? 'माइक्रोफोन अनुमति दिइएन। ब्राउजर सेटिङमा माइक्रोफोन अनुमति दिएर फेरि प्रयास गर्नुहोस्।'
+        : event.error === 'no-speech'
+          ? 'आवाज सुनिएन। माइक्रोफोन नजिकबाट फेरि बोल्नुहोस्।'
+          : `आवाज पहिचान गर्न सकिएन (${event.error})। फेरि प्रयास गर्नुहोस्।`;
+      setError(message);
+      voiceTranscriptRef.current = '';
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+      const transcript = voiceTranscriptRef.current.trim();
+      if (transcript) void sendQuestion(transcript);
+    };
+    recognitionRef.current = recognition;
+    try {
+      recognition.start();
+      setIsListening(true);
+    } catch {
+      recognitionRef.current = null;
+      setIsListening(false);
+      setError('माइक्रोफोन सुरु हुन सकेन। ब्राउजरको माइक्रोफोन अनुमति जाँचेर फेरि प्रयास गर्नुहोस्।');
+    }
+  };
+
   const clearConversation = () => {
+    voiceTranscriptRef.current = '';
+    recognitionRef.current?.abort();
+    recognitionRef.current = null;
+    setIsListening(false);
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsSpeaking(false);
     setMessages([]);
     setError('');
     setQuestion('');
@@ -108,6 +247,12 @@ export default function ProcurementChatbot({ onNavigate }: ProcurementChatbotPro
   const sendQuestion = async (value = question) => {
     const prompt = value.trim();
     if (!prompt || isSearching) return;
+    if (recognitionRef.current) {
+      voiceTranscriptRef.current = '';
+      recognitionRef.current.abort();
+      recognitionRef.current = null;
+      setIsListening(false);
+    }
     setQuestion('');
     setError('');
     setIsSearching(true);
@@ -185,15 +330,22 @@ export default function ProcurementChatbot({ onNavigate }: ProcurementChatbotPro
               </div>
             </div>
             {messages.length > 0 && (
-              <button type="button" onClick={clearConversation} className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15">
-                <RotateCcw className="h-3.5 w-3.5" /> नयाँ संवाद
-              </button>
+              <div className="flex items-center gap-2">
+                {isSpeaking && (
+                  <button type="button" onClick={() => { window.speechSynthesis.cancel(); setIsSpeaking(false); }} className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15">
+                    <VolumeX className="h-3.5 w-3.5" /> बोल्न रोक्नुहोस्
+                  </button>
+                )}
+                <button type="button" onClick={clearConversation} className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-xs font-semibold text-white hover:bg-white/15">
+                  <RotateCcw className="h-3.5 w-3.5" /> नयाँ संवाद
+                </button>
+              </div>
             )}
           </div>
         </div>
 
         <div className="border-b border-amber-200 bg-amber-50/80 px-5 py-3 text-xs leading-5 text-amber-950 sm:px-7">
-          जवाफ बनाउन तपाईंको प्रश्न, पछिल्लो संवाद र मिल्दो स्रोत अंश सुरक्षित Supabase Edge Function मार्फत Google Gemini मा पठाइन्छ। एपका सामग्री पुराना हुन सक्छन्; अन्तिम निर्णयअघि आधिकारिक पछिल्लो पाठ र जारी बोलपत्रसँग रुजु गर्नुहोस्।
+          बोलेको प्रश्न ब्राउजरको speech service ले लिखितमा रूपान्तरण गर्छ; त्यसको अडियो प्रशोधन ब्राउजर प्रदायकको नीतिअनुसार हुन्छ। प्रश्न, पछिल्लो संवाद र मिल्दो स्रोत अंश सुरक्षित Supabase Edge Function मार्फत Google Gemini मा पठाइन्छ। एपका सामग्री पुराना हुन सक्छन्; अन्तिम निर्णयअघि आधिकारिक पछिल्लो पाठ र जारी बोलपत्रसँग रुजु गर्नुहोस्।
         </div>
 
         <div className="space-y-5 px-4 py-5 sm:px-7 sm:py-6" aria-live="polite">
@@ -219,6 +371,16 @@ export default function ProcurementChatbot({ onNavigate }: ProcurementChatbotPro
                   </div>
                   <div className={`min-w-0 flex-1 rounded-2xl p-4 ${message.role === 'user' ? 'bg-blue-700 text-white' : 'border border-slate-200 bg-slate-50 text-slate-800'}`}>
                     <p className="whitespace-pre-wrap text-sm leading-6">{message.text}</p>
+                    {message.role === 'assistant' && (
+                      <button
+                        type="button"
+                        onClick={() => speakText(message.text)}
+                        aria-label="यो जवाफ फेरि सुनाउनुहोस्"
+                        className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-blue-800 hover:bg-blue-50"
+                      >
+                        <Volume2 className="h-3.5 w-3.5" /> जवाफ सुन्नुहोस्
+                      </button>
+                    )}
                     {message.sources && message.sources.length > 0 && (
                       <details className="mt-4 rounded-xl border border-slate-200 bg-white/80 p-3">
                         <summary className="flex cursor-pointer list-none items-center gap-2 text-xs font-bold text-slate-700"><FileText className="h-4 w-4" /> जवाफका आधार स्रोत ({message.sources.length})</summary>
@@ -262,12 +424,26 @@ export default function ProcurementChatbot({ onNavigate }: ProcurementChatbotPro
               className="max-h-40 min-h-12 flex-1 resize-y bg-transparent px-2 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
               disabled={isSearching}
             />
+            <button
+              type="button"
+              onClick={startVoiceInput}
+              disabled={isSearching}
+              aria-label={isListening ? 'आवाज रेकर्डिङ रोक्नुहोस्' : 'बोलेर प्रश्न सोध्नुहोस्'}
+              title={isListening ? 'रेकर्डिङ रोक्नुहोस्' : 'बोलेर प्रश्न सोध्नुहोस्'}
+              className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition disabled:cursor-not-allowed disabled:opacity-50 ${
+                isListening
+                  ? 'animate-pulse border-red-300 bg-red-50 text-red-700'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800'
+              }`}
+            >
+              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+            </button>
             <button type="submit" disabled={!question.trim() || isSearching} className="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl bg-blue-700 px-3.5 text-sm font-semibold text-white transition hover:bg-blue-800 disabled:cursor-not-allowed disabled:opacity-50">
               <Send className="h-4 w-4" /><span className="hidden sm:inline">जवाफ पाउनुहोस्</span>
             </button>
           </div>
           <div className="mt-2 flex flex-wrap items-center justify-between gap-2 px-1 text-[11px] text-slate-500">
-              <span>{question.length}/1,600 · जवाफसँग मिल्दो स्रोत तल हेर्न सकिन्छ।</span>
+              <span>{isListening ? 'सुन्दैछु… बोलिसकेपछि प्रश्न आफैं पठाइनेछ।' : `${question.length}/1,600 · माइक्रोफोनबाट बोल्नुहोस् वा प्रश्न लेख्नुहोस्। जवाफ बोलेर सुनाइन्छ।`}</span>
             <span>Google Gemini प्रयोग गरिन्छ</span>
           </div>
         </form>

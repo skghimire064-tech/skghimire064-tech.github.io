@@ -1,6 +1,6 @@
 export interface FatalBidderMistake {
   id: string;
-  category: 'bank-guarantee' | 'egp-technical' | 'poa-jv' | 'pricing-boq' | 'qualification-fin5' | 'services-goods';
+  category: 'bank-guarantee' | 'egp-technical' | 'poa-jv' | 'pricing-boq' | 'qualification-fin5' | 'services-goods' | 'review-complaints';
   categoryNepali: string;
   severity: 'critical' | 'high' | 'medium';
   title: string;
@@ -13,13 +13,14 @@ export interface FatalBidderMistake {
 }
 
 export const FATAL_MISTAKES_CATEGORIES = [
-  { id: 'all', label: 'सबै घातक गल्तीहरू (१५ वटा)' },
+  { id: 'all', label: 'सबै घातक गल्तीहरू (१६ वटा)' },
   { id: 'bank-guarantee', label: 'बैंक ग्यारेन्टी र म्याद' },
   { id: 'egp-technical', label: 'e-GP र डकुमेन्ट अपलोड' },
   { id: 'poa-jv', label: 'वारिसनामा, अख्तियारी र जेभी' },
   { id: 'pricing-boq', label: 'BOQ, दररेट र भ्याट' },
   { id: 'qualification-fin5', label: 'FIN-5, योग्यता र स्वघोषणा' },
   { id: 'services-goods', label: 'मालसामान र परामर्श सेवा' },
+  { id: 'review-complaints', label: 'उजुरी तथा पुनरावलोकन' },
 ] as const;
 
 export const FATAL_BIDDER_MISTAKES: FatalBidderMistake[] = [
@@ -217,6 +218,19 @@ export const FATAL_BIDDER_MISTAKES: FatalBidderMistake[] = [
     precedentReference: 'PPRC तथा सर्वोच्च अदालतको सर्वसम्मत नजिर: १ सेकेन्ड ढिला पेश भएको बिड पनि कुनै पनि परिस्थितिमा स्वीकार गर्न मिल्दैन।',
     safePreventionProtocol: 'अन्तिम समयको पर्खाइ कहिल्यै नगर्नुहोस्। बिड पेश गर्ने अन्तिम समयभन्दा कम्तीमा २ देखि ३ घण्टा अगावै सम्पूर्ण फाइलहरू अपलोड गरी "Submit Bid" बटन थिचेर डिजिटल एकनलेजमेन्ट स्लिप (Submission Receipt) सुरक्षित राख्नुहोस्।',
     checklistHint: 'घडी हेर्नुहोस्: अन्तिम समयभन्दा कम्तीमा २ घण्टा अगाडि सबमिसन स्लिप हातमा परिसकेको हुनुपर्छ।',
+  },
+  {
+    id: 'mistake-vague-review-complaint',
+    category: 'review-complaints',
+    categoryNepali: 'उजुरी तथा पुनरावलोकन',
+    severity: 'high',
+    title: '१६. प्रमाण र बुँदागत आधारबिनाको पुनरावलोकन निवेदन',
+    subtleMistake: 'मूल्याङ्कनको कुन निर्णय, कागजातको कुन शर्त वा तथ्यमा त्रुटि छ भन्ने नखुलाई केवल "पक्षपात भयो" जस्ता सामान्य आरोपसहित निवेदन दिनु।',
+    legalConsequence: 'निवेदनमा तथ्यगत आधार र प्रमाण नहुँदा दाबी स्थापित नहुन सक्छ। लागू प्रक्रियाको चरण, हदम्याद वा आवश्यक कागजात छुटेमा निवेदन सुनुवाइमा नपर्न वा खारेज हुन सक्छ।',
+    legalReference: 'सार्वजनिक खरिद ऐनको पुनरावलोकनसम्बन्धी व्यवस्था तथा सम्बन्धित बोलपत्र कागजात',
+    precedentReference: 'guide.docx मा उल्लेखित PPRC निर्णयहरूको सार: बुँदागत कारण र प्रमाणसहितको दाबी सामान्य आरोपभन्दा बलियो हुन्छ।',
+    safePreventionProtocol: 'सम्बन्धित मूल्याङ्कन प्रतिवेदन/आशयको सूचना, बोलपत्र कागजातको ठ्याक्कै शर्त, आफ्नै प्रस्तावका प्रमाण र माग गरिएको उपचार छुट्टाछुट्टै उल्लेख गर्नुहोस्। निवेदन दिनुअघि हाल लागू कानुनअनुसारको सही निकाय, प्रक्रिया, हदम्याद र आवश्यक कागजात जाँच्नुहोस्।',
+    checklistHint: 'निवेदनमा विवादित निर्णय, उल्लङ्घन भएको शर्त, समर्थन गर्ने प्रमाण र मागिएको उपचार स्पष्ट छन् तथा लागू हदम्यादभित्र दर्ता हुँदैछ भनी रुजु गर्नुहोस्।',
   },
 ];
 

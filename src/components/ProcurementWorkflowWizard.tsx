@@ -23,6 +23,7 @@ import {
 import { PROCUREMENT_METHODS } from '../data/procurementData';
 import { PROCUREMENT_TEMPLATES, ProcurementTemplate } from '../data/templatesData';
 import { formatNepaliCurrency } from '../utils/procurementUtils';
+import { GuideSourceNotice } from './GuideSourceNotice';
 import { 
   WORKFLOW_PRESETS, 
   METHOD_WORKFLOWS, 
@@ -219,6 +220,7 @@ export const ProcurementWorkflowWizard: React.FC<ProcurementWorkflowWizardProps>
 
   return (
     <div className="space-y-6">
+      <GuideSourceNotice />
       {/* Intro Header */}
       <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4 no-print">
         <div>

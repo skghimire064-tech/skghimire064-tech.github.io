@@ -73,6 +73,7 @@ import {
   FatalBidderMistake,
   RiskAuditItem,
 } from '../data/bidderMistakesData';
+import { GuideSourceNotice } from './GuideSourceNotice';
 
 interface BidderPortalViewProps {
   onSwitchToEntityMode?: () => void;
@@ -961,7 +962,7 @@ export const BidderPortalView: React.FC<BidderPortalViewProps> = ({
                 <span className="truncate">बोलपत्रदाता सचेतना केन्द्र • Fatal Bid Disqualification Pitfalls & Risk Auditor</span>
               </div>
               <h1 className="text-xl lg:text-2xl font-bold tracking-tight truncate">
-                बोलपत्र बदर (Non-Responsive) हुनसक्ने १५ घातक गल्तीहरू र पूर्व-पेश जोखिम अडिट
+                बोलपत्र बदर (Non-Responsive) हुनसक्ने १६ घातक गल्तीहरू र पूर्व-पेश जोखिम अडिट
               </h1>
               <p className="text-xs sm:text-sm text-rose-100/90 mt-1 leading-relaxed line-clamp-2">
                 हेर्दा सामान्य लाग्ने तर बोलपत्रलाई सिधै रद्द गराउने कानूनी, प्राविधिक र प्रक्रियागत छिद्रहरूको विस्तृत विश्लेषण, बैंक ग्यारेन्टी म्याद क्याल्कुलेटर, र बिड सबमिट गर्नुअघिको अनिवार्य १०-बुँदे जोखिम अडिट।
@@ -1424,7 +1425,7 @@ export const BidderPortalView: React.FC<BidderPortalViewProps> = ({
                 घातक गल्तीहरू र जोखिम अडिट
               </h3>
               <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                १ दिन म्याद कम हुने, ससर्त FIN-5, e-GP पासवर्ड लगायत १५ घातक पासो र अडिट।
+                १ दिन म्याद कम हुने, ससर्त FIN-5, e-GP पासवर्ड लगायत १६ घातक पासो र अडिट।
               </p>
               <div className="mt-3 flex items-center text-xs font-semibold text-rose-700">
                 <span>जोखिम जाँच्नुहोस् (१५ पासोहरू)</span>
@@ -4103,6 +4104,7 @@ export const BidderPortalView: React.FC<BidderPortalViewProps> = ({
       {/* ------------------------------------------------------------- */}
       {activeSubTab === 'fatal-mistakes' && (
         <div className="space-y-8">
+          <GuideSourceNotice />
           {/* Section 1: Bid Security Validity Calculator */}
           <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-2xs space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -4365,7 +4367,7 @@ export const BidderPortalView: React.FC<BidderPortalViewProps> = ({
               <div>
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-rose-800">
                   <FileWarning className="w-4 h-4" />
-                  <span>खण्ड ३: हेर्दा साना तर बोलपत्र सिधै बदर गराउने १५ घातक गल्तीहरू (Detailed Case Database)</span>
+                  <span>खण्ड ३: हेर्दा साना तर बोलपत्र सिधै बदर गराउने १६ घातक गल्तीहरू (Detailed Case Database)</span>
                 </div>
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 mt-0.5">
                   कानूनी छिद्रहरू, स्थापित नजिरहरू, र बच्ने व्यावहारिक सुरक्षा उपायहरू

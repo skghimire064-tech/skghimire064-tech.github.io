@@ -11,7 +11,6 @@ import {
   Calculator, 
   Scale, 
   MessageSquareText,
-  Bot,
   Search, 
   PlusCircle, 
   X,
@@ -78,7 +77,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       groupTitle: 'व्यवस्थापन तथा सल्लाह',
       items: [
         { id: 'dashboard', label: 'ड्यासबोर्ड', icon: Briefcase, desc: ' ' },
-        { id: 'procurement-chat', label: 'खरिद स्रोत सहायक', icon: Bot, desc: ' ' },
         { id: 'advisor', label: 'खरिद सल्लाहकार', icon: Sparkles, desc: ' ' },
         { id: 'workflow-wizard', label: 'चरणबद्ध गाइड (Wizard)', icon: ClipboardList, desc: ' ' },
         { id: 'dilemma-solver', label: 'समस्या समाधान (FAQ)', icon: HelpCircle, desc: ' ' },

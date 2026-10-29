@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { PROCUREMENT_STAGES } from '../data/procurementData';
 import { EGP_GUIDELINE_SECTIONS } from '../data/egpGuidelines';
+import { GuideSourceNotice } from './GuideSourceNotice';
 import {
   ProcurementStage,
   StatutoryRule,
@@ -167,6 +168,7 @@ export const StagesGuideView: React.FC<StagesGuideViewProps> = ({
 
   return (
     <div className="space-y-6">
+      <GuideSourceNotice />
       {/* View Header */}
       <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-red-950 p-6 sm:p-8 rounded-2xl text-white shadow-md relative overflow-hidden">
         <div className="absolute right-0 top-0 w-96 h-96 bg-red-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
